@@ -1,0 +1,138 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>素材库与导出 · 细化</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#EEF0F3;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding:44px 36px 36px;display:flex;gap:30px;justify-content:center;color:#0A0A0B}
+.wrap{position:relative}
+.cap{position:absolute;top:-28px;left:2px;font-size:12px;color:#5B616B;font-weight:600}
+.phone{width:376px;height:812px;background:#fff;border-radius:38px;box-shadow:0 24px 60px rgba(10,10,11,.14);overflow:hidden;position:relative;display:flex;flex-direction:column}
+.status{height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:12px;font-weight:600}
+.body{flex:1;padding:6px 18px 0;overflow:hidden}
+.h2{font-size:26px;font-weight:700;letter-spacing:-.5px}
+.row{display:flex;align-items:center;gap:8px}
+.between{display:flex;align-items:center;justify-content:space-between}
+.tiny{font-size:11px;color:#8A8F98}
+.pill{display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid #ECECEE;color:#5B616B}
+.pill.on{background:#EEF3FF;color:#2563EB;border-color:transparent}
+.search{margin-top:12px;height:40px;background:#F6F7F9;border-radius:11px;display:flex;align-items:center;padding:0 14px;font-size:13px;color:#8A8F98}
+.chips{display:flex;gap:6px;margin-top:11px;overflow:hidden}
+.chip{height:27px;padding:0 10px;border-radius:8px;background:#F6F7F9;color:#5B616B;font-size:11px;font-weight:600;display:flex;align-items:center;white-space:nowrap}
+.chip.on{background:#EEF3FF;color:#2563EB}
+.sortrow{display:flex;align-items:center;gap:13px;margin-top:11px}
+.sort{font-size:11px;color:#8A8F98;padding:3px 1px;border-bottom:2px solid transparent}
+.sort.on{color:#0A0A0B;font-weight:600;border-bottom-color:#2563EB}
+.card{border:1px solid #ECECEE;border-radius:16px;padding:4px 13px;margin-top:9px}
+.task{display:flex;align-items:center;gap:9px;padding:11px 0;border-bottom:1px solid #ECECEE}
+.task:last-child{border-bottom:none}
+.check{width:18px;height:18px;border-radius:50%;border:1.5px solid #D8DADF;flex:none}
+.check.on{background:#2563EB;border-color:#2563EB;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.thumb{width:42px;height:42px;border-radius:10px;background:#0A0A0B;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex:none}
+.t1{font-size:12.5px;font-weight:600;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini{display:inline-block;font-size:10px;color:#2563EB;background:#EEF3FF;border-radius:5px;padding:2px 6px;margin-right:4px}
+.snip{font-size:10.5px;color:#8A8F98;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.star{font-size:16px;color:#C9CDD4;flex:none}
+.star.on{color:#2563EB}
+.mask{position:absolute;inset:0;background:rgba(10,10,11,.28);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;z-index:6;padding:10px 18px 20px;box-shadow:0 -10px 34px rgba(10,10,11,.14)}
+.grip{width:34px;height:4px;border-radius:99px;background:#E5E7EB;margin:2px auto 10px}
+.sheet-title{font-size:12px;color:#8A8F98;text-align:center;padding-bottom:6px}
+.sitem{padding:13px 4px;font-size:14px;border-bottom:1px solid #F2F3F5;display:flex;justify-content:space-between;align-items:center}
+.sitem:last-child{border-bottom:none}
+.sitem .d{font-size:10px;color:#8A8F98;margin-top:2px}
+.cancel{margin-top:8px;text-align:center;font-size:12px;color:#5B616B;padding:8px 0;border-top:1px solid #F2F3F5}
+.dock{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ECECEE;padding:11px 18px 20px;display:flex;align-items:center;justify-content:space-between;z-index:6}
+.btn{height:32px;padding:0 12px;border-radius:9px;font-size:11.5px;font-weight:600;display:flex;align-items:center;justify-content:center;border:1px solid #0A0A0B;background:#fff}
+.btn.dark{background:#0A0A0B;color:#fff}
+.btn.blue{background:#2563EB;color:#fff;border-color:#2563EB}
+.title{font-size:20px;font-weight:700;line-height:1.3;letter-spacing:-.3px;margin-top:4px}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions .btn{flex:1;height:36px}
+.seg{display:flex;gap:9px;padding:9px 3px;border-bottom:1px solid #F2F3F5}
+.seg .t{width:32px;font-size:10px;color:#8A8F98;font-family:Menlo,monospace;padding-top:3px}
+.seg .tx{font-size:12.5px;line-height:1.55}
+.hud{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(10,10,11,.82);color:#fff;font-size:12px;padding:14px 20px;border-radius:12px;z-index:9}
+</style></head><body>
+
+<div class="wrap"><div class="cap">素材库 · 长按菜单</div>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+  <div class="body">
+    <div class="between"><div class="h2">素材库</div><div class="pill on">批量导出</div></div>
+    <div class="search">搜标题或正文，如「钩子」<span style="margin-left:auto">⌕</span></div>
+    <div class="chips"><div class="chip on">全部</div><div class="chip">抖音</div><div class="chip">小红书</div><div class="chip">快手</div><div class="chip">B站</div></div>
+    <div class="sortrow"><span class="tiny">排序</span><div class="sort on">最新</div><div class="sort">最长</div><div class="sort">最早</div></div>
+    <div class="chips"><div class="chip on">#爆款 12</div><div class="chip">#口播 8</div><div class="chip">#复盘 5</div></div>
+    <div class="between" style="margin-top:9px"><span class="tiny">128 条 · 已筛选</span><span class="tiny" style="color:#2563EB">清空筛选</span></div>
+    <div class="card">
+      <div class="task"><div class="thumb">抖音</div><div style="flex:1;min-width:0"><div class="t1">3 个账号实测 7 天，我找到了流量密码</div><div class="tiny">11-05 18:42 · 178 字</div><div style="margin-top:3px"><span class="mini">爆款</span><span class="mini">口播</span></div></div><div class="star on">★</div></div>
+      <div class="task"><div class="thumb">小红书</div><div style="flex:1;min-width:0"><div class="t1">别再瞎剪了，前 3 秒决定完播率</div><div class="tiny">11-05 16:20 · 96 字</div><div class="snip">但真正的问题不是封面，是你没有前 3 秒钩子……</div></div><div class="star on">★</div></div>
+      <div class="task"><div class="thumb">B站</div><div style="flex:1;min-width:0"><div class="t1">一条视频涨粉 2 万，复盘全流程</div><div class="tiny">11-04 21:08 · 243 字</div><div style="margin-top:3px"><span class="mini">复盘</span></div></div><div class="star">☆</div></div>
+    </div>
+  </div>
+  <div class="mask"></div>
+  <div class="sheet">
+    <div class="grip"></div>
+    <div class="sitem"><b>打开</b></div>
+    <div class="sitem"><b>取消收藏</b></div>
+    <div class="sitem"><b>加标签</b></div>
+    <div class="sitem"><b>重命名</b></div>
+    <div class="sitem" style="color:#D93025"><b>删除</b></div>
+    <div class="cancel">取消</div>
+  </div>
+</div></div>
+
+<div class="wrap"><div class="cap">素材库 · 批量导出</div>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+  <div class="body">
+    <div class="between"><div class="h2">素材库</div><div class="pill on">取消批量</div></div>
+    <div class="search">搜标题或正文，如「钩子」<span style="margin-left:auto">⌕</span></div>
+    <div class="chips"><div class="chip on">全部</div><div class="chip">抖音</div><div class="chip">小红书</div><div class="chip">快手</div><div class="chip">B站</div></div>
+    <div class="sortrow"><span class="tiny">排序</span><div class="sort on">最新</div><div class="sort">最长</div><div class="sort">最早</div></div>
+    <div class="between" style="margin-top:10px"><span class="tiny">128 条</span><span class="tiny">已选 4 条</span></div>
+    <div class="card">
+      <div class="task"><div class="check on">✓</div><div class="thumb">抖音</div><div style="flex:1;min-width:0"><div class="t1">3 个账号实测 7 天，我找到了流量密码</div><div class="tiny">11-05 18:42 · 178 字</div></div><div class="star on">★</div></div>
+      <div class="task"><div class="check on">✓</div><div class="thumb">小红书</div><div style="flex:1;min-width:0"><div class="t1">别再瞎剪了，前 3 秒决定完播率</div><div class="tiny">11-05 16:20 · 96 字</div></div><div class="star on">★</div></div>
+      <div class="task"><div class="check on">✓</div><div class="thumb">B站</div><div style="flex:1;min-width:0"><div class="t1">一条视频涨粉 2 万，复盘全流程</div><div class="tiny">11-04 21:08 · 243 字</div></div><div class="star">☆</div></div>
+      <div class="task"><div class="check on">✓</div><div class="thumb">录音</div><div style="flex:1;min-width:0"><div class="t1">客户访谈 47 分钟</div><div class="tiny">11-04 09:12 · 6820 字</div></div><div class="star">☆</div></div>
+      <div class="task"><div class="check"></div><div class="thumb">公众号</div><div style="flex:1;min-width:0"><div class="t1">为什么你的账号做不起来</div><div class="tiny">11-03 20:31 · 1542 字</div></div><div class="star">☆</div></div>
+    </div>
+    <div class="tiny" style="text-align:center;margin-top:10px">勾选后可合并成一个文件，或打包 ZIP</div>
+  </div>
+  <div class="dock">
+    <div class="row"><div class="pill line" style="height:26px">全选</div><span class="tiny">已选 4</span></div>
+    <div class="row"><div class="btn">Word</div><div class="btn">Excel</div><div class="btn dark">ZIP</div></div>
+  </div>
+</div></div>
+
+<div class="wrap"><div class="cap">结果页 · 导出面板</div>
+<div class="phone">
+  <div class="status"><span>9:41</span><span>●●● ⌁ ▮</span></div>
+  <div class="body">
+    <div class="title">3 个账号实测 7 天，我找到了流量密码</div>
+    <div class="tiny" style="margin-top:5px">抖音 · 2:58 · 12 句 · 178 字</div>
+    <div class="actions"><div class="btn dark">复制全文</div><div class="btn blue">导出</div><div class="btn">提词器</div></div>
+    <div class="row" style="margin-top:9px"><div class="pill on">★ 已收藏</div><div class="pill">改标签</div><div style="flex:1"></div><span class="tiny">Word / Excel / SRT</span></div>
+    <div class="row" style="margin-top:7px"><span class="mini">爆款</span><span class="mini">口播</span></div>
+    <div class="row" style="margin-top:12px"><div class="pill on">逐句稿</div><div class="pill">结构卡</div><div class="pill">二创</div><div style="flex:1"></div><span class="tiny">评分 86</span></div>
+    <div class="tiny" style="margin-top:9px;color:#8A8F98">点任意一句，单独复制</div>
+    <div style="margin-top:4px">
+      <div class="seg"><div class="t">0:00</div><div class="tx">如果你拍了 100 条视频还是 300 播放，问题不在内容。</div></div>
+      <div class="seg"><div class="t">0:04</div><div class="tx">我用三个账号实测了七天，只有一条做对了开头。</div></div>
+      <div class="seg"><div class="t">0:09</div><div class="tx">但真正的问题不是封面，是你没有前 3 秒钩子。</div></div>
+      <div class="seg"><div class="t">0:14</div><div class="tx">把这句话发在评论区，我挑三个人帮你看。</div></div>
+    </div>
+  </div>
+  <div class="mask"></div>
+  <div class="sheet">
+    <div class="grip"></div>
+    <div class="sheet-title">导出这条稿子</div>
+    <div class="sitem"><div><b>Word 文档</b><div class="d">全文 + 逐句 + 结构卡，可直接改</div></div><span style="color:#C9CDD4">›</span></div>
+    <div class="sitem"><div><b>Excel 表格</b><div class="d">逐句时间轴，可筛选、可分工</div></div><span style="color:#C9CDD4">›</span></div>
+    <div class="sitem"><div><b>SRT 字幕</b><div class="d">发给剪映 / Premiere 直接用</div></div><span style="color:#C9CDD4">›</span></div>
+    <div class="sitem"><div><b>Markdown</b><div class="d">复制到 Notion / 飞书 / 公众号</div></div><span style="color:#C9CDD4">›</span></div>
+    <div class="sitem"><div><b>纯文本</b><div class="d">只要正文，复制即用</div></div><span style="color:#C9CDD4">›</span></div>
+    <div class="cancel">取消</div>
+  </div>
+</div></div>
+
+</body></html>

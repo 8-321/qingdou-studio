@@ -1,0 +1,13 @@
+
+.rw{white-space:pre-wrap;font-size:26rpx;line-height:1.75;color:#0A0A0B}
+
+.chip{display:inline-flex;align-items:center;height:44rpx;padding:0 14rpx;border-radius:10rpx;background:#EEF3FF;color:#2563EB;font-size:20rpx;font-weight:600}
+
+.sheet-mask{position:fixed;left:0;right:0;top:0;bottom:0;background:rgba(10,10,11,.28);z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;border-radius:32rpx 32rpx 0 0;z-index:21;padding:16rpx 40rpx 40rpx;box-shadow:0 -12rpx 40rpx rgba(10,10,11,.12)}
+.grip{width:72rpx;height:8rpx;border-radius:999rpx;background:#E5E7EB;margin:0 auto 20rpx}
+.sheet-title{font-size:30rpx;font-weight:600;margin-bottom:8rpx}
+.sheet-item{display:flex;align-items:center;padding:26rpx 0;border-bottom:1rpx solid #F2F3F5}
+.sheet-name{font-size:28rpx;font-weight:600;line-height:1.3}
+.sheet-arrow{font-size:36rpx;color:#C9CDD4;padding-left:16rpx}
+.sheet-cancel{margin-top:20rpx;text-align:center;font-size:26rpx;color:#5B616B;padding:18rpx 0}

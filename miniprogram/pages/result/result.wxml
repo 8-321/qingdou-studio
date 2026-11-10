@@ -1,0 +1,105 @@
+<view class="wrap">
+  <view wx:if="{{!result && !err}}" class="card mt12">
+    <view class="h3">正在拆解</view>
+    <view class="sub mt8">{{task.stage || '排队中'}} · {{task.progress || 0}}%</view>
+    <view style="height:12rpx;background:#ECECEE;border-radius:6rpx;margin-top:24rpx;overflow:hidden">
+      <view style="height:12rpx;background:#2563EB;width:{{task.progress || 0}}%"></view>
+    </view>
+    <view class="tiny mt8">可以退出，完成后在素材库查看。原文件 24 小时后删除。</view>
+  </view>
+
+  <view wx:if="{{err}}" class="card mt12">
+    <view class="h3">这条没成功</view>
+    <view class="sub mt8">{{err}}</view>
+    <button wx:if="{{errCode === 'TOO_LONG'}}" class="btn primary mt12" bindtap="goBenefits">升级会员 / 配自己的 Key</button>
+    <button class="btn ghost mt8" bindtap="goUpload">改用上传，效果一样</button>
+  </view>
+
+  <block wx:if="{{result}}">
+    <view class="h2">{{result.title}}</view>
+    <view class="tiny mt8">{{result.platformText}} · {{durText}} · {{segments.length}} 句 · {{chars}} 字</view>
+
+    <view class="row mt12" style="gap:12rpx">
+      <button class="btn primary sm grow" bindtap="copyAll">复制全文</button>
+      <button class="btn blue sm grow" bindtap="openSheet" disabled="{{exporting}}">导出</button>
+      <button class="btn ghost sm grow" bindtap="goPrompter">提词器</button>
+    </view>
+
+    <view class="row mt8" style="gap:12rpx">
+      <view class="pill {{fav ? 'blue' : 'line'}}" bindtap="toggleFav">{{fav ? '★ 已收藏' : '☆ 收藏'}}</view>
+      <view class="pill line" bindtap="editTags">{{tags.length ? '改标签' : '加标签'}}</view>
+      <view class="grow"></view>
+      <text class="tiny">Word / Excel / MD / SRT</text>
+    </view>
+
+    <view wx:if="{{tags.length}}" class="row mt8" style="gap:8rpx;flex-wrap:wrap">
+      <text wx:for="{{tags}}" wx:key="*this" class="chip">{{item}}</text>
+    </view>
+
+    <view class="row mt12" style="gap:16rpx">
+      <view class="pill {{tab === 'text' ? 'moss' : 'line'}}" bindtap="switchTab" data-tab="text">逐句稿</view>
+      <view class="pill {{tab === 'structure' ? 'moss' : 'line'}}" bindtap="switchTab" data-tab="structure">结构卡</view>
+      <view class="pill {{tab === 'rewrite' ? 'moss' : 'line'}}" bindtap="switchTab" data-tab="rewrite">二创</view>
+      <view class="grow"></view>
+      <text class="tiny">评分 {{result.structure.score}}</text>
+    </view>
+
+    <view wx:if="{{tab === 'text'}}" class="card mt8">
+      <view class="tiny" style="padding:0 12rpx 8rpx">点任意一句，单独复制</view>
+      <view wx:for="{{segments}}" wx:key="start" class="seg" bindtap="copySegment" data-text="{{item.text}}">
+        <view class="t">{{item.timeText}}</view>
+        <view class="tx">{{item.text}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{tab === 'structure'}}" class="card mt8">
+      <view wx:for="{{result.structure.sections}}" wx:key="key" style="padding:20rpx 0;border-bottom:1rpx solid #ECECEE">
+        <view class="row" style="gap:12rpx">
+          <text class="tag {{item.key}}">{{item.label}}</text>
+          <text class="tiny">{{item.slot}} · 强度 {{item.strength}}</text>
+        </view>
+        <view class="quote mt8">"{{item.text}}"</view>
+        <view class="tiny mt8">{{item.why}}</view>
+        <view class="card flat mt8" style="padding:16rpx;font-size:22rpx">{{item.template}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{tab === 'rewrite'}}" class="mt8">
+      <view class="row" style="gap:12rpx">
+        <view class="pill {{rwStyle === 'oral' ? 'blue' : 'line'}}" data-style="oral" bindtap="pickStyle">同结构口播</view>
+        <view class="pill {{rwStyle === 'knowledge' ? 'blue' : 'line'}}" data-style="knowledge" bindtap="pickStyle">知识拆解</view>
+        <view class="pill {{rwStyle === 'sales' ? 'blue' : 'line'}}" data-style="sales" bindtap="pickStyle">带货口播</view>
+      </view>
+      <view class="tiny mt8" wx:if="{{rewrite}}">{{rewrite.engine === 'llm' ? '用你自己的 Key 生成' : '模板版：配自己的 API Key 可生成成稿'}}</view>
+      <view wx:if="{{rewriting}}" class="card mt8"><view class="tiny">正在生成 3 版…</view></view>
+      <block wx:if="{{!rewriting && rewrite}}">
+        <view class="card mt8" wx:for="{{rewrite.versions}}" wx:key="title">
+          <view class="between">
+            <view class="h3">{{item.title}}</view>
+            <view class="pill line sm" data-index="{{index}}" bindtap="copyVersion">复制</view>
+          </view>
+          <view class="rw mt8">{{item.text}}</view>
+        </view>
+        <button class="btn ghost sm mt8" bindtap="refreshRewrite">换一版</button>
+      </block>
+      <button wx:if="{{!rewriting && !rewrite}}" class="btn primary mt8" bindtap="generateRewrite">生成 3 版</button>
+    </view>
+
+    <view class="tiny center mt12">仅供个人学习参考，请勿用于侵权用途</view>
+  </block>
+
+  <view wx:if="{{sheetOpen}}" class="sheet-mask" bindtap="closeSheet"></view>
+  <view wx:if="{{sheetOpen}}" class="sheet">
+    <view class="grip"></view>
+    <view class="sheet-title">导出这条稿子</view>
+    <view wx:for="{{exportItems}}" wx:key="key" class="sheet-item" data-key="{{item.key}}" bindtap="pickExport">
+      <view class="grow">
+        <view class="sheet-name">{{item.label}}</view>
+        <view class="tiny">{{item.desc}}</view>
+      </view>
+      <text class="sheet-arrow">›</text>
+    </view>
+    <view class="sheet-cancel" bindtap="closeSheet">取消</view>
+  </view>
+</view>
+

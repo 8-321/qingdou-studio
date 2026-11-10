@@ -1,0 +1,12 @@
+[
+  {
+    "platform": "bilibili",
+    "url": "https://www.bilibili.com/video/BV1GJ411x7h7",
+    "note": "稳定基准，字幕链路"
+  },
+  {
+    "platform": "youtube",
+    "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "note": "需代理，海外平台基准"
+  }
+]

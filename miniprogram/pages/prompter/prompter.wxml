@@ -1,0 +1,21 @@
+<view class="pr">
+  <view class="bar">
+    <view class="back" bindtap="reset">回顶</view>
+    <view class="name">{{title}}</view>
+    <view class="state {{playing ? 'on' : ''}}">{{playing ? '滚动中' : '已暂停'}}</view>
+  </view>
+
+  <scroll-view class="stage" scroll-y scroll-top="{{top}}" scroll-with-animation="{{false}}">
+    <view class="pad"></view>
+    <view wx:for="{{paras}}" wx:key="i" class="line" style="font-size:{{fontSize}}rpx">{{item.text}}</view>
+    <view class="pad"></view>
+  </scroll-view>
+
+  <view class="ctrl">
+    <view class="ctl" bindtap="font" data-delta="-4">A−</view>
+    <view class="ctl" bindtap="font" data-delta="4">A＋</view>
+    <view class="ctl" bindtap="speed" data-delta="-1">慢</view>
+    <view class="main" bindtap="toggle">{{playing ? '暂停' : '开始'}}</view>
+    <view class="ctl" bindtap="speed" data-delta="1">快</view>
+  </view>
+</view>

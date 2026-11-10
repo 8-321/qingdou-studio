@@ -1,0 +1,18 @@
+.search{position:relative;display:flex;align-items:center}
+.search-input{flex:1;height:84rpx;background:#F6F7F9;border-radius:22rpx;padding:0 68rpx 0 28rpx;font-size:26rpx}
+.clear{position:absolute;right:8rpx;width:64rpx;height:64rpx;line-height:60rpx;text-align:center;color:#8A8F98;font-size:36rpx}
+.chips{white-space:nowrap;margin-top:20rpx}
+.chip{display:inline-flex;align-items:center;height:56rpx;padding:0 20rpx;margin-right:12rpx;border-radius:14rpx;background:#F6F7F9;color:#5B616B;font-size:22rpx;font-weight:600}
+.chip.on{background:#EEF3FF;color:#2563EB}
+.sortrow{display:flex;align-items:center;gap:14rpx;margin-top:18rpx}
+.sort{font-size:21rpx;color:#8A8F98;padding:6rpx 2rpx;border-bottom:2rpx solid transparent}
+.sort.on{color:#0A0A0B;font-weight:600;border-bottom-color:#2563EB}
+.link{color:#2563EB}
+.mini-tag{font-size:19rpx;color:#2563EB;background:#EEF3FF;border-radius:8rpx;padding:4rpx 10rpx}
+.snippet{font-size:21rpx;color:#8A8F98;margin-top:6rpx;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.check{width:40rpx;height:40rpx;border-radius:50%;border:2rpx solid #D8DADF;flex:none;font-size:22rpx;line-height:36rpx;text-align:center;color:#fff}
+.check.on{background:#2563EB;border-color:#2563EB}
+.star{width:56rpx;text-align:center;font-size:34rpx;color:#C9CDD4;flex:none}
+.star.on{color:#2563EB}
+.more{text-align:center;padding:28rpx 0;font-size:24rpx;color:#5B616B}
+.dock{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1rpx solid #ECECEE;padding:18rpx 40rpx 28rpx;display:flex;align-items:center;justify-content:space-between;gap:16rpx}

@@ -1,0 +1,79 @@
+<view class="wrap">
+  <view class="between">
+    <view class="h2">API 密钥</view>
+    <view class="pill line" bindtap="goBenefits">免费额度 ›</view>
+  </view>
+
+  <view class="card mt12 bluecard">
+    <view class="h3" style="color:#1E4FD8">AI 成本你自付，平台只收解析与工作台</view>
+    <view class="tiny mt8" style="color:#3B5BA8">配置自己的 Key 后，不再扣平台 AI 额度。密钥加密存储，任何页面只显示后四位。</view>
+  </view>
+
+  <view class="between mt12"><text class="h3">免费体验</text><text class="tiny">每个功能 2 次</text></view>
+  <view class="card mt8">
+    <view wx:for="{{features}}" wx:key="feature" class="usage">
+      <view class="between"><text style="font-weight:600">{{item.name}}</text><text class="tiny">剩 {{item.left}}/{{item.free}}</text></view>
+      <view class="bar mt8"><view style="width:{{item.free ? item.left * 100 / item.free : 0}}%"></view></view>
+    </view>
+  </view>
+
+  <view class="between mt12"><text class="h3">我的密钥</text><text class="tiny">每类 1 个</text></view>
+  <view class="card mt8">
+    <view wx:for="{{keyCards}}" wx:key="kind" class="keyrow">
+      <view class="row" style="gap:16rpx;min-width:0;flex:1">
+        <view class="badge">{{item.badge}}</view>
+        <view class="grow">
+          <view class="between"><text style="font-weight:600">{{item.title}}</text><text wx:if="{{item.key}}" class="pill moss sm">已配置</text></view>
+          <view wx:if="{{item.key}}" class="tiny mt8">{{item.key.provider}} · {{item.key.model || '默认模型'}} · {{item.key.hint}}</view>
+          <view wx:else class="tiny mt8">{{item.desc}}</view>
+        </view>
+      </view>
+      <view class="row" style="gap:10rpx">
+        <button wx:if="{{item.key}}" class="btn ghost sm tinybtn" data-id="{{item.key.id}}" bindtap="testKey">测试</button>
+        <button wx:if="{{item.key}}" class="btn ghost sm tinybtn" data-kind="{{item.kind}}" bindtap="openSheet">更换</button>
+        <button wx:if="{{item.key}}" class="btn ghost sm tinybtn" data-id="{{item.key.id}}" bindtap="removeKey">删除</button>
+        <button wx:if="{{!item.key}}" class="btn primary sm" data-kind="{{item.kind}}" bindtap="openSheet">配置</button>
+      </view>
+    </view>
+
+    <view class="keyrow">
+      <view class="row" style="gap:16rpx;min-width:0;flex:1">
+        <view class="badge">URL</view>
+        <view class="grow">
+          <view class="between"><text style="font-weight:600">链接解析</text><text class="pill blue sm">平台提供</text></view>
+          <view class="tiny mt8">账号池、签名与代理由平台维护，不可自定义</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <button class="btn primary mt12" bindtap="openSheet" data-kind="asr">添加 / 更换密钥</button>
+  <view class="tiny center mt12">安全：AES-256-GCM 加密 · 接口只返回后四位 · 可随时删除</view>
+
+  <view wx:if="{{sheet}}" class="mask" bindtap="closeSheet">
+    <view class="sheet" catchtap="noop">
+      <view class="between">
+        <text class="h3">添加{{kind === 'asr' ? '语音转写' : '文案模型'}} Key</text>
+        <text class="tiny" bindtap="closeSheet">关闭 ✕</text>
+      </view>
+      <view class="tiny mt8">Key 只用于调用服务商，不经过我们的 AI 额度。</view>
+
+      <view class="platrow">
+        <view wx:for="{{providerList}}" wx:key="id" class="plat {{provider === item.id ? 'on' : ''}}"
+              bindtap="pickProvider" data-id="{{item.id}}">{{item.name}}</view>
+      </view>
+
+      <view class="label mt12">API Key</view>
+      <input class="inp" password value="{{apiKey}}" bindinput="onKey" placeholder="粘贴你的 Key" />
+
+      <view class="label mt8">Base URL</view>
+      <input class="inp" value="{{baseUrl}}" bindinput="onBase" placeholder="https://..." />
+
+      <view class="label mt8">模型</view>
+      <input class="inp" value="{{model}}" bindinput="onModel" placeholder="留空用默认" />
+
+      <button class="btn primary mt12" loading="{{saving}}" bindtap="save">测试并保存</button>
+      <view class="tiny center mt8">保存前会先测试连通性；失败不会落库</view>
+    </view>
+  </view>
+</view>

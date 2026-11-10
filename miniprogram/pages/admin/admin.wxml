@@ -1,0 +1,174 @@
+<view class="wrap">
+  <block wx:if="{{loading}}">
+    <view class="empty">加载中…</view>
+  </block>
+
+  <block wx:elif="{{noAuth}}">
+    <view class="auth">
+      <view class="h2">没有管理员权限</view>
+      <view class="tiny mt8" wx:if="{{canClaim}}">系统还没有管理员。你现在认领，以后就能直接在手机上改额度、补次数、开会员。</view>
+      <view class="tiny mt8" wx:else>请让管理员在「更多 → 协管员」里加上你的用户 ID。</view>
+      <view class="mono mt12" wx:if="{{me}}">{{me.user_id}}</view>
+      <button class="btn primary mt12" wx:if="{{canClaim}}" bindtap="claim">认领管理员</button>
+      <button class="btn ghost mt8" wx:if="{{me}}" bindtap="copyId">复制我的用户 ID</button>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="between">
+      <view>
+        <view class="h2">管理后台</view>
+        <view class="tiny mt8">{{me.user_id}} · {{me.role === 'owner' ? '创始管理员' : '管理员'}}</view>
+      </view>
+      <view class="pill blue" bindtap="loadMobile">刷新</view>
+    </view>
+
+    <view class="tabs mt12">
+      <view class="tab {{tab === 'overview' ? 'on' : ''}}" data-tab="overview" bindtap="switchTab">概览</view>
+      <view class="tab {{tab === 'features' ? 'on' : ''}}" data-tab="features" bindtap="switchTab">额度</view>
+      <view class="tab {{tab === 'users' ? 'on' : ''}}" data-tab="users" bindtap="switchTab">用户</view>
+      <view class="tab {{tab === 'more' ? 'on' : ''}}" data-tab="more" bindtap="switchTab">更多</view>
+    </view>
+
+    <block wx:if="{{tab === 'overview'}}">
+      <view class="grid mt12">
+        <view class="stat"><view class="tiny">用户总数</view><view class="n">{{stats.users}}</view></view>
+        <view class="stat"><view class="tiny">今日任务</view><view class="n">{{stats.tasks_today}}</view></view>
+        <view class="stat"><view class="tiny">今日成功率</view><view class="n">{{stats.success_rate}}%</view></view>
+        <view class="stat"><view class="tiny">累计收入</view><view class="n">¥{{stats.revenue_yuan}}</view></view>
+        <view class="stat"><view class="tiny">今日拦截</view><view class="n">{{stats.sec_blocked_today || 0}}</view></view>
+        <view class="stat"><view class="tiny">自备 Key 用户</view><view class="n">{{stats.keys || 0}}</view></view>
+        <view class="stat"><view class="tiny">累计邀请</view><view class="n">{{stats.invites_total || 0}}</view></view>
+        <view class="stat"><view class="tiny">今日视频奖励</view><view class="n">{{stats.ad_rewards_today || 0}}</view></view>
+      </view>
+
+      <view class="card flat mt12">
+        <view class="between"><text class="tiny">今日成功 {{stats.done_today}}</text><text class="tiny">失败 {{stats.failed_today}}</text><text class="tiny">拦截 {{stats.sec_blocked_today || 0}}</text></view>
+        <view class="tiny mt8">未消耗额度 {{stats.credits_outstanding}} 次</view>
+        <view class="tiny mt8">拦截 = 内容安全未通过，已自动退还次数；自备 Key 不烧平台 AI 费。</view>
+      </view>
+
+      <view class="between mt12"><text class="h3">最近任务</text><text class="tiny">最近 6 条</text></view>
+      <view class="card mt8">
+        <view class="trow" wx:for="{{tasks}}" wx:key="id">
+          <view class="grow">
+            <view class="t1">{{item.title || item.platform || '未命名'}}</view>
+            <view class="tiny">{{item.short_user}} · {{item.short_time}}</view>
+          </view>
+          <text class="pill sm {{item.status === 'done' ? 'moss' : item.status === 'failed' ? 'verm' : 'line'}}">{{item.label}}</text>
+        </view>
+        <view wx:if="{{!tasks.length}}" class="empty">今天还没有任务</view>
+      </view>
+    </block>
+
+    <block wx:if="{{tab === 'features'}}">
+      <view class="card mt12">
+        <view class="h3">每功能免费次数</view>
+        <view class="tiny mt8">这里的数字是「每个用户终身免费」，不是每天。用户第 3 次会被引导配自己的 Key、签到或买额度。</view>
+      </view>
+
+      <view class="card mt12">
+        <view class="feat" wx:for="{{features}}" wx:key="feature">
+          <view class="grow">
+            <view class="h3">{{item.name}}</view>
+            <view class="tiny">今日 {{item.today}} 次 · {{item.feature}}</view>
+          </view>
+          <view class="stepper">
+            <view class="step" data-index="{{index}}" data-delta="-1" bindtap="bumpFeature">−</view>
+            <view class="num">{{item.free_tries}}</view>
+            <view class="step" data-index="{{index}}" data-delta="1" bindtap="bumpFeature">+</view>
+          </view>
+        </view>
+      </view>
+
+      <button class="btn primary mt12" bindtap="saveFeatures" loading="{{saving}}">保存额度</button>
+
+      <view class="card mt12">
+        <view class="between">
+          <view>
+            <view class="h3">激励视频</view>
+            <view class="tiny mt8">{{growth.ad_enabled ? '广告位已开通' : '未配置 AD_UNIT_ID'}} · 用户看完 +1 次链接提取</view>
+          </view>
+          <text class="pill sm {{growth.ad_enabled ? 'moss' : 'line'}}">{{growth.ad_enabled ? '已开通' : '未开通'}}</text>
+        </view>
+        <view class="feat">
+          <view class="grow">
+            <view class="h3">每日上限</view>
+            <view class="tiny">0 = 关闭；最多 20 次</view>
+          </view>
+          <view class="stepper">
+            <view class="step" data-delta="-1" bindtap="bumpGrowth">−</view>
+            <view class="num">{{growth.ad_reward_daily}}</view>
+            <view class="step" data-delta="1" bindtap="bumpGrowth">+</view>
+          </view>
+        </view>
+        <button class="btn ghost mt8" bindtap="saveGrowth">保存视频上限</button>
+      </view>
+      <view class="tiny center mt8">改完立即生效，不需要重启服务</view>
+    </block>
+
+    <block wx:if="{{tab === 'users'}}">
+      <view class="search mt12">
+        <input class="search-inp" value="{{q}}" bindinput="onQ" placeholder="搜索用户 ID" confirm-type="search" bindconfirm="search" />
+        <view class="search-btn" bindtap="search">搜索</view>
+      </view>
+      <view class="tiny mt8">点任意用户：补偿 3 次 / 加减额度 / 开会员</view>
+
+      <view class="card mt8">
+        <view class="urow" wx:for="{{users}}" wx:key="id" data-id="{{item.id}}" bindtap="pickUser">
+          <view class="grow">
+            <view class="t1">{{item.short_user}}</view>
+            <view class="tiny">{{item.plan_label}} · 额度 {{item.credits}} · 链接 {{item.used_link}} / 录音 {{item.used_audio}}</view>
+          </view>
+          <view class="arrow">›</view>
+        </view>
+        <view wx:if="{{!users.length}}" class="empty">没有用户</view>
+      </view>
+    </block>
+
+    <block wx:if="{{tab === 'more'}}">
+      <view class="card mt12">
+        <view class="between">
+          <view class="h3">我的身份</view>
+          <text class="pill line sm">{{me.role}}</text>
+        </view>
+        <view class="mono mt8">{{me.user_id}}</view>
+        <button class="btn ghost sm mt8" bindtap="copyId">复制用户 ID</button>
+      </view>
+
+      <view class="card mt12">
+        <view class="h3">生成兑换码</view>
+        <view class="tiny mt8">企业采购、活动赠送、iOS 用户都用这个</view>
+        <input class="inp" value="{{newCode}}" bindinput="onNewCode" placeholder="如 VIP2026" />
+        <picker range="{{products}}" range-key="name" value="{{productIndex}}" bindchange="onProduct">
+          <view class="inp picker">{{products[productIndex].name || '选择商品'}}<text class="tiny"> ›</text></view>
+        </picker>
+        <input class="inp" type="number" value="{{newUses}}" bindinput="onNewUses" placeholder="可用次数" />
+        <button class="btn primary sm mt8" bindtap="createRedeem">生成</button>
+
+        <view class="trow" wx:for="{{redeemCodes}}" wx:key="code">
+          <view class="grow"><view class="t1">{{item.code}}</view><view class="tiny">{{item.product_id}} · 已用 {{item.used}}/{{item.max_uses}}</view></view>
+        </view>
+      </view>
+
+      <view class="card mt12">
+        <view class="h3">协管员</view>
+        <view class="tiny mt8">加的是用户 ID，不是手机号。对方打开小程序就能看到管理入口。</view>
+        <view class="trow" wx:for="{{admins}}" wx:key="user_id">
+          <view class="grow"><view class="t1">{{item.user_id}}</view><view class="tiny">{{item.role}} · {{item.source === 'env' ? '环境变量' : '后台添加'}}</view></view>
+          <view class="del" wx:if="{{item.source !== 'env' && item.user_id !== me.user_id}}" data-id="{{item.user_id}}" bindtap="removeAdmin">移除</view>
+        </view>
+        <input class="inp" value="{{newAdmin}}" bindinput="onNewAdmin" placeholder="对方用户 ID" />
+        <button class="btn ghost sm mt8" bindtap="addAdmin">添加协管员</button>
+      </view>
+
+      <view class="card mt12">
+        <view class="h3">审计日志</view>
+        <view class="trow" wx:for="{{audit}}" wx:key="id">
+          <view class="grow"><view class="t1">{{item.action}} · {{item.target}}</view><view class="tiny">{{item.admin}} · {{item.created_at}}</view></view>
+        </view>
+        <view wx:if="{{!audit.length}}" class="empty">暂无记录</view>
+      </view>
+    </block>
+  </block>
+</view>

@@ -1,0 +1,13 @@
+[
+  {
+    "platform": "bilibili",
+    "url": "https://www.bilibili.com/video/BV1GJ411x7h7",
+    "note": "稳定基准，字幕链路",
+    "http": 200,
+    "status": "done",
+    "error": "",
+    "title": "【官方 MV】Never Gonna Give You Up - Rick Astley",
+    "segments": 3,
+    "seconds": 64.3
+  }
+]

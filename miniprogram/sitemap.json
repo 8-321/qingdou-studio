@@ -1,0 +1,4 @@
+{
+  "desc": "文案工作台",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

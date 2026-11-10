@@ -1,0 +1,68 @@
+<view class="wrap">
+  <view class="between">
+    <view class="h2">素材库</view>
+    <view class="pill {{selecting ? 'blue' : 'line'}} sm" bindtap="toggleSelectMode">{{selecting ? '取消批量' : '批量导出'}}</view>
+  </view>
+
+  <view class="search mt12">
+    <input class="search-input" value="{{q}}" placeholder="搜标题或正文，如「钩子」" bindinput="onSearch" confirm-type="search" />
+    <view wx:if="{{q}}" class="clear" bindtap="clearSearch">×</view>
+  </view>
+
+  <scroll-view scroll-x class="chips" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{platforms}}" wx:key="key" class="chip {{platform === item.key ? 'on' : ''}}" data-key="{{item.key}}" bindtap="setPlatform">{{item.label}}</view>
+    <view class="chip {{fav ? 'on' : ''}}" bindtap="toggleFavFilter">★ 收藏</view>
+  </scroll-view>
+
+  <view class="sortrow">
+    <text class="tiny">排序</text>
+    <view wx:for="{{sorts}}" wx:key="key" class="sort {{sort === item.key ? 'on' : ''}}" data-key="{{item.key}}" bindtap="setSort">{{item.label}}</view>
+    <view class="grow"></view>
+    <text wx:if="{{loading}}" class="tiny">加载中…</text>
+  </view>
+
+  <scroll-view wx:if="{{tags.length}}" scroll-x class="chips" enhanced show-scrollbar="{{false}}">
+    <view wx:for="{{tags}}" wx:key="tag" class="chip {{tag === item.tag ? 'on' : ''}}" data-tag="{{item.tag}}" bindtap="setTag">#{{item.tag}} {{item.count}}</view>
+  </scroll-view>
+
+  <view class="between mt8">
+    <text class="tiny">{{total}} 条{{filtersOn ? ' · 已筛选' : ''}}</text>
+    <text wx:if="{{filtersOn && !selecting}}" class="tiny link" bindtap="clearFilters">清空筛选</text>
+  </view>
+
+  <view class="card mt8">
+    <view wx:if="{{!loading && tasks.length === 0}}" class="empty">
+      <view>{{filtersOn ? '没有匹配的稿子，换个词试试' : '还没有稿子，去首页提取一条'}}</view>
+      <view wx:if="{{filtersOn}}" class="pill line sm" style="margin-top:24rpx;display:inline-flex" bindtap="clearFilters">清空筛选</view>
+    </view>
+    <view wx:for="{{tasks}}" wx:key="id" class="task" bindtap="open" bindlongpress="menu" data-id="{{item.id}}">
+      <view wx:if="{{selecting}}" class="check {{item.checked ? 'on' : ''}}">{{item.checked ? '✓' : ''}}</view>
+      <view class="thumb">{{item.platformText}}</view>
+      <view class="grow">
+        <view class="t1">{{item.title || '处理中…'}}</view>
+        <view class="tiny">{{item.dateText}} · {{item.chars || 0}} 字{{item.status === 'done' ? '' : ' · 处理中'}}</view>
+        <view wx:if="{{item.tags.length}}" class="row" style="gap:6rpx;margin-top:8rpx;flex-wrap:wrap">
+          <text wx:for="{{item.tags}}" wx:for-item="tg" wx:key="*this" class="mini-tag">{{tg}}</text>
+        </view>
+        <view wx:elif="{{item.snippet}}" class="snippet">{{item.snippet}}</view>
+      </view>
+      <view class="star {{item.fav ? 'on' : ''}}" catchtap="star" data-id="{{item.id}}">{{item.fav ? '★' : '☆'}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{hasMore}}" class="more" bindtap="loadMore">加载更多</view>
+  <view wx:if="{{selecting}}" class="tiny center mt12">长按任意一条可改名、加标签、删除</view>
+  <view wx:if="{{selecting}}" style="height:120rpx"></view>
+
+  <view wx:if="{{selecting}}" class="dock">
+    <view class="row" style="gap:12rpx">
+      <view class="pill {{allSelected ? 'blue' : 'line'}} sm" bindtap="selectAll">{{allSelected ? '取消全选' : '全选'}}</view>
+      <text class="tiny">已选 {{selCount}}</text>
+    </view>
+    <view class="row" style="gap:12rpx">
+      <button class="btn ghost sm" data-fmt="docx" bindtap="exportSelected">Word</button>
+      <button class="btn ghost sm" data-fmt="xlsx" bindtap="exportSelected">Excel</button>
+      <button class="btn primary sm" data-fmt="zip" bindtap="exportSelected">ZIP</button>
+    </view>
+  </view>
+</view>

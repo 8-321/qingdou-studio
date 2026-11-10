@@ -1,0 +1,33 @@
+<view class="wrap">
+  <view class="row" style="gap:24rpx;margin-top:16rpx">
+    <view style="width:112rpx;height:112rpx;border-radius:50%;background:#0A0A0B;color:#fff;display:flex;align-items:center;justify-content:center;font-size:44rpx">文</view>
+    <view class="grow">
+      <view class="h3">文案工作台用户</view>
+      <view class="tiny mt8">今日剩 {{quota.left}} 次 · 额度 {{wallet.credits}} 次 · {{wallet.plan === 'free' ? '免费版' : wallet.plan === 'pro' ? 'BYOK 会员' : '团队版'}}</view>
+    </view>
+  </view>
+
+  <view class="card mt12">
+    <view class="between"><text class="tiny">今日剩余</text><text class="h2">{{quota.left}}</text></view>
+    <button class="btn ghost mt8" bindtap="goBenefits">补充次数</button>
+  </view>
+
+  <view class="card mt12">
+    <view class="task" bindtap="goKeys"><view class="grow">API 密钥</view><text class="tiny">自带 Key，免 AI 费 ›</text></view>
+    <view class="task" bindtap="goBenefits"><view class="grow">福利中心</view><text class="tiny">签到 / 会员 ›</text></view>
+    <view class="task" bindtap="goLibrary"><view class="grow">我的素材库</view><text class="tiny">›</text></view>
+    <view class="task" bindtap="goUpload"><view class="grow">上传提取</view><text class="tiny">›</text></view>
+  </view>
+
+  <view class="card mt12" wx:if="{{isAdmin || canClaim}}">
+    <view class="task" bindtap="goAdmin">
+      <view class="grow">
+        <view style="font-weight:600">{{isAdmin ? '管理后台' : '认领管理员'}}</view>
+        <view class="tiny mt8">{{isAdmin ? '额度 / 用户补偿 / 兑换码 / 协管员' : '系统还没有管理员，点这里认领'}}</view>
+      </view>
+      <text class="tiny">›</text>
+    </view>
+  </view>
+
+  <view class="tiny center mt12">v1.1.0 · 仅供个人学习参考</view>
+</view>

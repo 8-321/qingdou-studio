@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>文案工作台 · 高保真原型</title>
+<style>
+:root{
+  --paper:#FFFFFF; --paper2:#F6F7F9; --card:#FFFFFF;
+  --ink:#0A0A0B; --ink2:#5B616B; --ink3:#8A8F98; --line:#ECECEE;
+  --verm:#2563EB; --vermSoft:#EEF3FF; --moss:#0B7A4B; --mossSoft:#E8F5EF;
+  --gold:#6B7280; --goldSoft:#F3F4F6;
+  --sans:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --serif:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"SF Mono","JetBrains Mono",Consolas,monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  background:
+    radial-gradient(1200px 600px at 15% 0%,#EFE7D8 0%,transparent 60%),
+    radial-gradient(900px 500px at 90% 100%,#F1F3F5 0%,transparent 55%),
+    #E8E2D6;
+  font-family:var(--sans); color:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  padding:32px; min-height:100vh;
+}
+.stage{display:flex;align-items:center;gap:56px}
+.phone{
+  position:relative; width:390px; height:844px; background:var(--paper);
+  border-radius:44px; border:1px solid #D8DADF;
+  box-shadow:0 2px 0 rgba(0,0,0,.04), 0 40px 90px -30px rgba(10,10,11,.22), 0 0 0 10px #0A0A0B;
+  overflow:hidden; flex:none;
+}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:112px;height:28px;background:#0A0A0B;border-radius:20px;z-index:60}
+.statusbar{position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:16px 28px 0;font-size:13px;font-weight:600;z-index:50;pointer-events:none}
+.statusbar .right{display:flex;gap:5px;align-items:center}
+.screen{
+  position:absolute; inset:0; padding:58px 20px 92px; overflow-y:auto; overflow-x:hidden;
+  background:var(--paper);
+  opacity:0; transform:translateY(10px) scale(.995); pointer-events:none;
+  transition:opacity .28s cubic-bezier(.2,.8,.2,1), transform .28s cubic-bezier(.2,.8,.2,1);
+  scrollbar-width:none;
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1;transform:none;pointer-events:auto;z-index:10}
+.screen.dark{background:#14110F;color:#F2EDE4}
+h1,h2,h3,p{margin:0}
+.h1{font-family:var(--serif);font-size:26px;line-height:34px;font-weight:700;letter-spacing:.5px}
+.h2{font-family:var(--serif);font-size:20px;line-height:28px;font-weight:700}
+.h3{font-size:15px;line-height:22px;font-weight:600}
+.sub{font-size:12px;line-height:18px;color:var(--ink2)}
+.tiny{font-size:11px;line-height:16px;color:var(--ink3)}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.2px}
+.row{display:flex;align-items:center;gap:10px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.col{display:flex;flex-direction:column}
+.gap4{gap:4px}.gap8{gap:8px}.gap12{gap:12px}.gap16{gap:16px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.grow{flex:1;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;
+  box-shadow:0 1px 0 rgba(20,17,15,.03),0 10px 26px -18px rgba(20,17,15,.35)}
+.card.flat{box-shadow:none;background:var(--paper2);border-color:transparent}
+.divider{height:1px;background:var(--line);margin:14px 0}
+.pill{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:600}
+.pill.verm{background:var(--vermSoft);color:#C83417}
+.pill.moss{background:var(--mossSoft);color:var(--moss)}
+.pill.gold{background:var(--goldSoft);color:#4B5563}
+.pill.line{border:1px solid var(--line);color:var(--ink2);background:transparent}
+.btn{height:52px;border-radius:14px;border:none;width:100%;font-family:var(--sans);font-size:15px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
+  transition:transform .12s ease,background .2s ease}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.verm{background:var(--verm);color:#fff}
+.btn.ghost{background:transparent;border:1px solid var(--ink);color:var(--ink)}
+.btn.small{height:40px;border-radius:12px;font-size:13px;width:auto;padding:0 16px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.iconbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
+svg{display:block}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:82px;background:rgba(246,242,234,.92);
+  backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding:8px 8px 18px;z-index:40}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;
+  font-family:var(--sans);font-size:10px;color:var(--ink3);cursor:pointer;padding-top:6px;position:relative}
+.tab.on{color:var(--ink);font-weight:600}
+.tab.on::after{content:"";position:absolute;top:0;width:4px;height:4px;border-radius:50%;background:var(--verm)}
+.tab svg{opacity:.55}
+.tab.on svg{opacity:1}
+.brandline{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--ink3);text-transform:uppercase}
+.pastebox{position:relative;background:var(--card);border:1.5px dashed #C9BFAE;border-radius:18px;padding:16px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;transition:border-color .2s,box-shadow .2s;cursor:text}
+.pastebox:focus-within{border-color:var(--verm);box-shadow:0 0 0 4px rgba(255,77,46,.09)}
+.pastebox textarea{width:100%;border:none;outline:none;background:transparent;resize:none;font-family:var(--sans);font-size:14px;line-height:23px;color:var(--ink);height:70px}
+.pastebox textarea::placeholder{color:#A9A196}
+.platrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.plat{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 9px;border-radius:8px;background:var(--paper2);font-size:11px;color:var(--ink2)}
+.plat i{width:5px;height:5px;border-radius:50%;background:var(--ink3)}
+.plat.hot i{background:var(--verm)}
+.taskitem{display:flex;gap:12px;align-items:center;padding:10px 0}
+.thumb{width:52px;height:52px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;letter-spacing:.5px}
+.thumb.dy{background:linear-gradient(145deg,#1B1B22,#3A2230)}
+.thumb.bz{background:linear-gradient(145deg,#1E3A5F,#2E6C9E)}
+.thumb.gz{background:linear-gradient(145deg,#23594A,#3E8A70)}
+.thumb.up{background:linear-gradient(145deg,#4B5563,#9CA3AF)}
+.ringwrap{position:relative;width:150px;height:150px;margin:8px auto}
+.ringwrap svg{transform:rotate(-90deg)}
+.ringbg{stroke:#E6DFD1}
+.ringfg{stroke:url(#g1);stroke-linecap:round;transition:stroke-dashoffset .4s ease}
+.ringtxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.ringtxt b{font-size:34px;font-weight:600;letter-spacing:-1px;font-family:var(--mono)}
+.stages{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.stage-item{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink3)}
+.stage-item.done{color:var(--ink2)}
+.stage-item.now{color:var(--ink);font-weight:600}
+.dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none;font-size:10px}
+.stage-item.done .dot{background:var(--moss);border-color:var(--moss);color:#fff}
+.stage-item.now .dot{border-color:var(--verm);position:relative}
+.stage-item.now .dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--verm);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(.75)}50%{opacity:.45;transform:scale(1)}}
+.poster{position:relative;border-radius:18px;overflow:hidden;height:172px;background:
+  radial-gradient(120% 90% at 20% 10%,#4B5563 0%,transparent 55%),
+  radial-gradient(100% 100% at 90% 90%,#111827 0%,transparent 60%),#0A0A0B;
+  color:#fff;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+.poster .play{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.94);display:flex;align-items:center;justify-content:center;color:#14110F}
+.poster .scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,77,46,.9),transparent);animation:scan 2.8s linear infinite}
+@keyframes scan{0%{top:8%}100%{top:92%}}
+.actions4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.act{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;color:var(--ink2);cursor:pointer;transition:transform .12s}
+.act:active{transform:scale(.96)}
+.act.key{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.seg{display:flex;gap:10px;padding:11px 8px;border-radius:12px;cursor:pointer;transition:background .18s}
+.seg:hover{background:#F1ECE0}
+.seg.on{background:var(--vermSoft)}
+.seg .t{font-family:var(--mono);font-size:10px;color:var(--ink3);padding-top:4px;flex:none;width:34px}
+.seg .tx{font-family:var(--serif);font-size:15px;line-height:26px;color:#26221D}
+.seg.on .tx{color:#8E2A13}
+.tag{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;font-family:var(--sans);font-size:10px;font-weight:600;margin-bottom:4px;margin-right:6px}
+.tag.hook{background:var(--verm);color:#fff}
+.tag.pain{background:#26221D;color:#fff}
+.tag.proof{background:var(--moss);color:#fff}
+.tag.turn{background:var(--gold);color:#fff}
+.tag.cta{background:#0A0A0B;color:#FFFFFF}
+.score{display:flex;align-items:center;gap:16px}
+.score .num{font-family:var(--mono);font-size:40px;letter-spacing:-2px}
+.score .bar{height:6px;border-radius:4px;background:#E6DFD1;overflow:hidden;margin-top:6px}
+.score .bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--verm),var(--moss))}
+.struct{border-left:3px solid var(--ink);padding-left:12px;margin-top:14px}
+.struct.hook{border-color:var(--verm)}
+.struct.pain{border-color:#26221D}
+.struct.proof{border-color:var(--moss)}
+.struct.turn{border-color:var(--gold)}
+.struct.cta{border-color:#0A0A0B}
+.quote{font-family:var(--serif);font-size:15px;line-height:26px}
+.why{font-size:12px;line-height:20px;color:var(--ink2);margin-top:6px}
+.tpl{margin-top:8px;background:var(--paper2);border-radius:10px;padding:9px 11px;font-size:12px;line-height:19px;color:var(--ink2)}
+.chiprow{display:flex;gap:8px;flex-wrap:wrap}
+.chip{height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:transparent;font-family:var(--sans);font-size:13px;color:var(--ink2);cursor:pointer}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:600}
+.slider{width:100%;accent-color:var(--verm)}
+.vercard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer}
+.vercard.sel{border-color:var(--moss);box-shadow:0 0 0 3px rgba(35,89,74,.08)}
+.vercard p{font-family:var(--serif);font-size:14px;line-height:25px;margin-top:8px}
+#tp{position:absolute;inset:0;background:#0B0A09;color:#F7F3EA;z-index:80;display:none;flex-direction:column;padding:70px 26px 40px}
+#tp.show{display:flex}
+#tp .tpbody{flex:1;overflow:hidden;position:relative;margin-top:24px}
+#tp .tptext{font-family:var(--serif);font-size:26px;line-height:52px;opacity:.92;will-change:transform}
+#tp .tpctrl{display:flex;gap:10px;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid #2A2620}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:transform .12s}
+.tile:active{transform:scale(.985)}
+.tile .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.ic.v{background:var(--vermSoft);color:#C83417}
+.ic.a{background:var(--mossSoft);color:var(--moss)}
+.ic.f{background:var(--goldSoft);color:#4B5563}
+.progressline{height:6px;border-radius:4px;background:#E6DFD1;overflow:hidden}
+.progressline i{display:block;height:100%;background:var(--verm);border-radius:4px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+.day{border:1px solid var(--line);border-radius:10px;padding:8px 0 6px;text-align:center;font-size:10px;color:var(--ink3);background:var(--card)}
+.day b{display:block;font-size:12px;color:var(--ink2);margin-top:2px}
+.day.done{background:var(--moss);border-color:var(--moss);color:#DFF0E9}
+.day.done b{color:#fff}
+.day.today{border-color:var(--verm);box-shadow:0 0 0 3px rgba(255,77,46,.1)}
+.taskrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.taskrow:last-child{border-bottom:none}
+.plan{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card);cursor:pointer;position:relative;transition:border-color .2s,transform .12s}
+.plan:active{transform:scale(.985)}
+.plan.on{border-color:var(--moss);box-shadow:0 0 0 3px rgba(35,89,74,.09)}
+.plan .badge{position:absolute;top:-9px;right:12px;background:var(--verm);color:#fff;font-size:10px;padding:3px 8px;border-radius:999px;font-weight:600}
+.plan .price{font-family:var(--mono);font-size:26px;letter-spacing:-1px;margin-top:6px}
+.plan .price span{font-size:12px;color:var(--ink3);font-family:var(--sans);letter-spacing:0}
+.benefit{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:13px;line-height:20px}
+.benefit .ok{width:18px;height:18px;border-radius:50%;background:var(--mossSoft);color:var(--moss);display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
+.avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(145deg,#9CA3AF,#4B5563);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--serif);font-size:22px;font-weight:700;flex:none}
+.listrow{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px}
+.listrow:last-child{border-bottom:none}
+.listrow .ic2{width:30px;height:30px;border-radius:9px;background:var(--paper2);display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.toast{position:absolute;left:50%;bottom:120px;transform:translate(-50%,10px);background:rgba(20,17,15,.92);color:#FFFFFF;font-size:12px;padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:90}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.notes{width:300px;flex:none;color:#2B2F36}
+.notes h4{font-family:var(--serif);font-size:22px;margin:0 0 6px}
+.notes p{font-size:12.5px;line-height:21px;color:#5B554D;margin:0 0 16px}
+.jump{display:flex;flex-direction:column;gap:6px}
+.jump button{text-align:left;background:rgba(255,255,255,.55);border:1px solid #D8DADF;border-radius:10px;padding:8px 10px;font-family:var(--sans);font-size:12px;color:#2B2F36;cursor:pointer;display:flex;justify-content:space-between}
+.jump button:hover{background:#fff}
+.jump span{font-family:var(--mono);font-size:10px;color:#918A7E}
+.legend{margin-top:18px;font-size:11px;line-height:19px;color:#6B6459}
+.swatches{display:flex;gap:6px;margin-top:8px}
+.swatches i{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.06)}
+@media (max-width:1080px){.notes{display:none}}
+@media (max-height:900px){.phone{transform:scale(.9);transform-origin:center}}
+@media (max-height:800px){.phone{transform:scale(.8)}}
+<style id="minimal">
+:root{
+  --paper:#FFFFFF; --paper2:#F6F7F8; --card:#FFFFFF;
+  --ink:#0A0A0B; --ink2:#5F6368; --ink3:#9AA0A6; --line:#ECECEE;
+  --verm:#2563EB; --vermSoft:#EEF3FF; --moss:#0B7A4B; --mossSoft:#E9F7F0;
+  --gold:#4B5563; --goldSoft:#F2F3F5;
+  --sans:"Inter","SF Pro Text",-apple-system,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;
+  --serif:var(--sans); --mono:"SF Mono","JetBrains Mono",Consolas,monospace;
+}
+body{
+  background:#F1F2F4;
+  background-image:radial-gradient(#DCDEE2 1px,transparent 1px);
+  background-size:22px 22px;
+  font-family:var(--sans);
+}
+.phone{border-radius:40px;border:1px solid #E1E2E6;box-shadow:0 24px 70px -28px rgba(0,0,0,.35),0 0 0 9px #111214;background:#fff}
+.screen{background:#fff;padding:54px 20px 92px}
+.statusbar{font-size:12px;letter-spacing:.2px}
+.h1{font-family:var(--sans);font-size:24px;line-height:32px;font-weight:650;letter-spacing:-.6px}
+.h2{font-family:var(--sans);font-size:19px;line-height:27px;font-weight:650;letter-spacing:-.4px}
+.h3{font-size:14px;line-height:21px;font-weight:600;letter-spacing:-.1px}
+.sub{font-size:12px;line-height:18px;color:var(--ink2)}
+.tiny{font-size:11px;line-height:16px;color:var(--ink3)}
+.brandline{font-family:var(--mono);font-size:9px;letter-spacing:1.8px;color:#B0B4BA}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(10,10,11,.03)}
+.card.flat{background:#F6F7F8;border-color:transparent;box-shadow:none}
+.divider{background:var(--line);margin:13px 0}
+.pill{height:26px;padding:0 10px;font-size:11px;font-weight:600;border-radius:999px;letter-spacing:.1px}
+.pill.verm{background:var(--vermSoft);color:#1D4ED8}
+.pill.moss{background:var(--mossSoft);color:#0B7A4B}
+.pill.gold{background:var(--goldSoft);color:#4B5563}
+.pill.line{border:1px solid var(--line);color:var(--ink2);background:#fff}
+.btn{border-radius:12px;height:auto;min-height:50px;padding:13px 16px;line-height:1.2;font-size:14px;font-weight:600;letter-spacing:.1px}
+.btn.primary{background:#0A0A0B;color:#fff}
+.btn.verm{background:#2563EB;color:#fff}
+.btn.ghost{background:#fff;border:1px solid #DADCE0;color:#0A0A0B}
+.btn.small{height:38px;border-radius:10px;font-size:12px}
+.iconbtn{border:1px solid var(--line);color:var(--ink);background:#fff}
+.pastebox{border:1.5px dashed #D6D8DD;border-radius:14px;background:#fff}
+.pastebox:focus-within{border-color:#2563EB;box-shadow:0 0 0 4px rgba(37,99,235,.08)}
+.pastebox textarea{font-size:13.5px;line-height:22px;color:#0A0A0B}
+.pastebox textarea::placeholder{color:#ADB1B8}
+.plat{background:#F6F7F8;color:#5F6368;border-radius:7px;font-size:10.5px}
+.plat.hot i{background:#2563EB}
+.thumb{border-radius:10px;font-size:9px;letter-spacing:.4px}
+.thumb.dy{background:linear-gradient(145deg,#111214,#3A3D44)}
+.thumb.bz{background:linear-gradient(145deg,#1F2937,#4B5563)}
+.thumb.up{background:linear-gradient(145deg,#374151,#6B7280)}
+.thumb.gz{background:linear-gradient(145deg,#0B7A4B,#3E9E77)}
+.ringbg{stroke:#EDEEF0}
+#g1 stop:first-child{stop-color:#2563EB}
+#g1 stop:last-child{stop-color:#0A0A0B}
+.ringtxt b{font-size:32px;font-weight:600;letter-spacing:-1.5px}
+.stage-item.now .dot{border-color:#2563EB}
+.stage-item.now .dot::after{background:#2563EB}
+.stage-item.done .dot{background:#0A0A0B;border-color:#0A0A0B}
+.poster{background:radial-gradient(120% 100% at 15% 0%,#1E3A8A 0%,transparent 55%),radial-gradient(100% 100% at 95% 100%,#111827 0%,transparent 60%),#0A0A0B;border-radius:14px}
+.poster .scan{background:linear-gradient(90deg,transparent,rgba(96,165,250,.9),transparent)}
+.poster .play{background:#fff;color:#0A0A0B}
+.act{border-radius:12px;font-size:10.5px;background:#fff;border-color:var(--line)}
+.act.key{background:#0A0A0B;color:#fff;border-color:#0A0A0B}
+.act:hover{border-color:#C9CCD2}
+.seg{border-radius:9px}
+.seg:hover{background:#F6F7F8}
+.seg.on{background:#EEF3FF}
+.seg.on .tx{color:#1D4ED8}
+.seg .tx{font-family:var(--sans);font-size:14.5px;line-height:25px;color:#1F2328}
+.seg .t{font-size:10px;color:#9AA0A6}
+.tag{border-radius:5px;font-size:9.5px;height:19px;padding:0 6px;letter-spacing:.2px}
+.tag.hook{background:#2563EB}
+.tag.pain{background:#0A0A0B}
+.tag.proof{background:#0B7A4B}
+.tag.turn{background:#6B7280}
+.tag.cta{background:#0A0A0B}
+.struct{border-left:2px solid #0A0A0B;padding-left:12px}
+.struct.hook{border-color:#2563EB}.struct.pain{border-color:#0A0A0B}.struct.proof{border-color:#0B7A4B}.struct.turn{border-color:#9AA0A6}.struct.cta{border-color:#0A0A0B}
+.quote{font-family:var(--sans);font-size:14.5px;line-height:24px;color:#1F2328}
+.why{font-size:11.5px;line-height:19px;color:#5F6368}
+.tpl{background:#F6F7F8;border-radius:8px;font-size:11.5px;line-height:18px}
+.score .num{font-size:38px;letter-spacing:-2px}
+.score .bar i{background:linear-gradient(90deg,#2563EB,#0B7A4B)}
+.chip{border-radius:999px;font-size:12px;height:32px;border-color:#E3E5E8}
+.chip.on{background:#0A0A0B;border-color:#0A0A0B}
+.slider{accent-color:#2563EB}
+.vercard{border-radius:12px;background:#fff}
+.vercard.sel{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.vercard p{font-family:var(--sans);font-size:13.5px;line-height:23px}
+.tile{border-radius:14px;background:#fff}
+.tile:hover{border-color:#C9CCD2}
+.ic.v{background:#EEF3FF;color:#1D4ED8}
+.ic.a{background:#E9F7F0;color:#0B7A4B}
+.ic.f{background:#F2F3F5;color:#4B5563}
+.progressline{background:#EDEEF0}
+.progressline i{background:#2563EB}
+.day{border-radius:9px;background:#fff;font-size:9.5px}
+.day.done{background:#0A0A0B;border-color:#0A0A0B;color:#E5E7EB}
+.day.done b{color:#fff}
+.day.today{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.plan{border-radius:12px;background:#fff}
+.plan.on{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.07)}
+.plan .badge{background:#2563EB;font-size:9.5px}
+.plan .price{font-size:24px}
+.benefit .ok{background:#E9F7F0;color:#0B7A4B}
+.avatar{background:linear-gradient(145deg,#2563EB,#1E3A8A)}
+.listrow .ic2{background:#F6F7F8;color:#4B5563}
+.tabbar{background:rgba(255,255,255,.94);border-top:1px solid #ECECEE}
+.tab{font-size:9.5px;color:#9AA0A6}
+.tab.on{color:#0A0A0B}
+.tab.on::after{background:#2563EB}
+.toast{background:rgba(10,10,11,.94)}
+.notes{color:#2B2F36}
+.notes h4{font-family:var(--sans);font-size:18px;letter-spacing:-.3px}
+.notes p{color:#5F6368}
+.jump button{background:#fff;border:1px solid #E3E5E8;border-radius:9px;color:#2B2F36;font-size:11.5px}
+.jump button:hover{border-color:#C9CCD2;background:#FAFAFB}
+.jump span{color:#9AA0A6}
+.legend{color:#6B7280}
+.swatches i{border-radius:5px}
+
+/* BYOK */
+#s-keys .mt20{margin-top:14px}
+#s-keys .usage-row{padding:8px 0}
+#s-keys .keycard{padding:12px}
+#s-keys .keycard + .keycard{margin-top:8px}
+.byok-banner{border:1px solid #DCE5FB;background:#F7F9FF;cursor:pointer}
+.byok-dot{width:8px;height:8px;border-radius:50%;background:#2563EB;flex:none;box-shadow:0 0 0 4px rgba(37,99,235,.10)}
+.usage-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #F0F1F3}
+.usage-row:last-child{border-bottom:none}
+.usage-bar{width:70px;height:4px;border-radius:2px;background:#EDEEF0;overflow:hidden;flex:none}
+.usage-bar i{display:block;height:100%;background:#2563EB;border-radius:2px}
+.keycard{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.keycard + .keycard{margin-top:10px}
+.keycard .logo{width:38px;height:38px;border-radius:11px;background:#F6F7F8;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#0A0A0B;flex:none;letter-spacing:-.3px}
+.keycard .state{font-size:10px;font-weight:600;padding:2px 7px;border-radius:999px;background:#F2F3F5;color:#6B7280}
+.keycard .state.on{background:#E9F7F0;color:#0B7A4B}
+.keycard .state.platform{background:#EEF3FF;color:#1D4ED8}
+.sheet-mask{position:absolute;inset:0;background:rgba(10,10,11,.42);z-index:94;opacity:0;pointer-events:none;transition:.22s}
+.sheet-mask.show{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:22px 22px 0 0;padding:20px 20px 26px;z-index:95;transform:translateY(102%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:88%;overflow-y:auto}
+.sheet.show{transform:none}
+.sheet .handle{width:36px;height:4px;border-radius:2px;background:#E3E5E8;margin:0 auto 14px}
+.field{width:100%;height:44px;border:1px solid #E3E5E8;border-radius:10px;padding:0 12px;font-family:var(--sans);font-size:13px;color:#0A0A0B;background:#fff;outline:none;box-sizing:border-box}
+.field:focus{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.field::placeholder{color:#ADB1B8}
+.tabs2{display:flex;background:#F6F7F8;border-radius:10px;padding:3px;gap:3px}
+.tabs2 button{flex:1;height:34px;border:none;background:transparent;border-radius:8px;font-family:var(--sans);font-size:12px;font-weight:600;color:#6B7280;cursor:pointer}
+.tabs2 button.on{background:#fff;color:#0A0A0B;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="statusbar"><span>9:41</span><span class="right">
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4" y="5" width="3" height="6" rx="1"/><rect x="8" y="2.5" width="3" height="8.5" rx="1"/><rect x="12" y="0" width="3" height="11" rx="1" opacity=".35"/></svg>
+      <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .6 10.2 10.2 0 0 0 .8 3.4L2 4.6a8.7 8.7 0 0 1 6-2.4Zm0 3.2c1.4 0 2.7.5 3.7 1.4l1.2-1.2A7 7 0 0 0 8 3.8a7 7 0 0 0-4.9 1.8l1.2 1.2c1-.9 2.3-1.4 3.7-1.4Zm0 3.1c-.6 0-1.2.2-1.6.6L8 10.7l1.6-1.6c-.4-.4-1-.6-1.6-.6Z"/></svg>
+      <svg width="22" height="11" viewBox="0 0 22 11" fill="none"><rect x=".5" y=".5" width="18" height="10" rx="2.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="14" height="7" rx="1.5" fill="currentColor"/><path d="M20 4v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>
+    </span></div>
+
+    <section class="screen active" id="s-home">
+      <div class="between">
+        <div>
+          <div class="brandline">SCRIPT STUDIO</div>
+          <h1 class="h1" style="margin-top:4px">文案工作台</h1>
+          <p class="sub" style="margin-top:2px">11月4日 · 宜拆解爆款</p>
+        </div>
+        <button class="pill verm" onclick="go('benefits')">体验 2/2 ›</button>
+      </div>
+
+      <div class="card mt16" style="padding:14px">
+        <div class="pastebox">
+          <textarea placeholder="粘贴抖音 / 小红书 / B站 / 公众号链接&#10;整段分享文案也可以，会自动识别"></textarea>
+          <div class="between">
+            <span class="tiny">支持 12 个平台 · 自动去广告口令</span>
+            <span class="pill moss" style="height:24px">自动识别 ✓</span>
+          </div>
+        </div>
+        <div class="platrow">
+          <span class="plat hot"><i></i>抖音</span>
+          <span class="plat hot"><i></i>小红书</span>
+          <span class="plat"><i></i>快手</span>
+          <span class="plat"><i></i>B站</span>
+          <span class="plat"><i></i>视频号</span>
+          <span class="plat"><i></i>公众号</span>
+          <span class="plat"><i></i>录音</span>
+          <span class="plat"><i></i>相册</span>
+        </div>
+        <button class="btn primary mt16" onclick="startParse()">开始提取</button>
+        <p class="tiny" style="text-align:center;margin-top:10px">视频号请上传视频 · 其余平台直接粘链接</p>
+      </div>
+
+      <div class="card flat mt16 byok-banner" onclick="go('keys')">
+        <div class="between">
+          <div class="row gap10">
+            <span class="byok-dot"></span>
+            <div>
+              <p style="font-size:13px;font-weight:600;letter-spacing:-.1px">用自己的 API Key</p>
+              <p class="tiny">AI 成本你自付，平台只收解析与工作台费用</p>
+            </div>
+          </div>
+          <span class="tiny">去配置 ›</span>
+        </div>
+      </div>
+      <div class="between mt24">
+        <h3 class="h3">最近</h3>
+        <span class="tiny" onclick="go('library')" style="cursor:pointer">全部 ›</span>
+      </div>
+      <div class="card mt8" style="padding:6px 14px">
+        <div class="taskitem" onclick="go('result')" style="cursor:pointer">
+          <div class="thumb dy">抖音</div>
+          <div class="grow">
+            <p style="font-size:14px;line-height:20px">3 个动作，让你的口播从 300 播到 30 万</p>
+            <p class="tiny" style="margin-top:3px">1:24 · 18 秒前完成 · 已拆结构</p>
+          </div>
+          <span class="pill moss" style="height:22px;font-size:10px">完成</span>
+        </div>
+        <div style="height:1px;background:var(--line)"></div>
+        <div class="taskitem" onclick="go('result')" style="cursor:pointer">
+          <div class="thumb bz">B站</div>
+          <div class="grow">
+            <p style="font-size:14px;line-height:20px">为什么你的内容没人看？算法不背这个锅</p>
+            <p class="tiny" style="margin-top:3px">12:06 · 昨天 · 已取 CC 字幕</p>
+          </div>
+          <span class="pill line" style="height:22px;font-size:10px">导出</span>
+        </div>
+        <div style="height:1px;background:var(--line)"></div>
+        <div class="taskitem" onclick="go('library')" style="cursor:pointer">
+          <div class="thumb up">录音</div>
+          <div class="grow">
+            <p style="font-size:14px;line-height:20px">采访录音 1104.m4a</p>
+            <p class="tiny" style="margin-top:3px">47:12 · 转写中 68%</p>
+          </div>
+          <span class="pill gold" style="height:22px;font-size:10px">68%</span>
+        </div>
+      </div>
+
+      <div class="card flat mt16" onclick="go('structure')" style="cursor:pointer">
+        <div class="between">
+          <div class="row">
+            <span style="font-size:18px">✦</span>
+            <div><p style="font-size:13px;font-weight:600">今日拆解挑战</p><p class="tiny">看看这条 128 万赞的钩子怎么写</p></div>
+          </div>
+          <span class="tiny">去看看 ›</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="s-parse">
+      <div class="row gap12">
+        <button class="iconbtn" onclick="go('home')">←</button>
+        <span class="pill line">抖音 · v.douyin.com</span>
+      </div>
+      <div class="mt24" style="text-align:center">
+        <h2 class="h2">正在拆解这条视频</h2>
+        <p class="sub mt8" id="parseTitle">3 个动作，让你的口播从 300 播到 30 万</p>
+      </div>
+      <div class="ringwrap">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF4D2E"/><stop offset="1" stop-color="#23594A"/></linearGradient></defs>
+          <circle class="ringbg" cx="75" cy="75" r="64" fill="none" stroke-width="6"/>
+          <circle class="ringfg" id="ring" cx="75" cy="75" r="64" fill="none" stroke-width="6" stroke-dasharray="402" stroke-dashoffset="402"/>
+        </svg>
+        <div class="ringtxt"><b id="pct">0%</b><span class="tiny">预计还需 18 秒</span></div>
+      </div>
+      <div class="card mt16">
+        <div class="stages" id="stages">
+          <div class="stage-item" data-k="0"><span class="dot">1</span><span>解析链接与平台</span><span class="grow"></span><span class="mono">0.4s</span></div>
+          <div class="stage-item" data-k="1"><span class="dot">2</span><span>下载音视频</span><span class="grow"></span><span class="mono">3.1s</span></div>
+          <div class="stage-item" data-k="2"><span class="dot">3</span><span>识别字幕 / 提取音轨</span><span class="grow"></span><span class="mono">—</span></div>
+          <div class="stage-item" data-k="3"><span class="dot">4</span><span>语音转写</span><span class="grow"></span><span class="mono">—</span></div>
+          <div class="stage-item" data-k="4"><span class="dot">5</span><span>清洗与分段</span><span class="grow"></span><span class="mono">—</span></div>
+        </div>
+      </div>
+      <div class="card flat mt16">
+        <p class="tiny">可以退出，完成后微信通知你。原视频 24 小时后自动删除。</p>
+      </div>
+      <div class="row gap8 mt16">
+        <button class="btn ghost" onclick="go('home')">后台运行</button>
+        <button class="btn primary" onclick="finishParse()">跳过等待</button>
+      </div>
+    </section>
+
+    <section class="screen" id="s-result">
+      <div class="between">
+        <button class="iconbtn" onclick="go('home')">←</button>
+        <div class="row gap6"><span class="pill line">抖音</span><span class="pill moss">已提取</span></div>
+        <button class="iconbtn">···</button>
+      </div>
+
+      <div class="poster mt12">
+        <div class="scan"></div>
+        <div class="between">
+          <span class="mono" style="opacity:.7">@ 阿哲说职场</span>
+          <span class="mono" style="opacity:.7">1:24</span>
+        </div>
+        <div class="row gap12">
+          <div class="play"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5-9-5.5Z"/></svg></div>
+          <div class="grow">
+            <p style="font-size:15px;font-weight:600;line-height:22px">3 个动作，让你的口播从 300 播到 30 万</p>
+            <p class="mono" style="opacity:.65;margin-top:5px">12.8w 赞 · 1.2w 收藏</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions4 mt12">
+        <div class="act key" onclick="toast('已复制全文')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>复制全文</div>
+        <div class="act" onclick="toast('已生成 SRT')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 17v2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2"/></svg>导出</div>
+        <div class="act" onclick="go('structure')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.6 5.6 6.4.8-4.5 4.4 1 6.2-5.5-3-5.5 3 1-6.2L3 9.4l6.4-.8L12 3Z"/></svg>结构卡</div>
+        <div class="act" onclick="go('rewrite')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20l4.5-1 9-9a2.1 2.1 0 0 0-3-3l-9 9L4 20Z"/></svg>二创</div>
+      </div>
+
+      <div class="between mt20">
+        <h3 class="h3">逐句稿 <span class="tiny" style="font-weight:400">· 38 句 · 点句子跳转</span></h3>
+        <span class="pill line" style="height:24px" onclick="toast('已开启跟读高亮')">跟读</span>
+      </div>
+
+      <div class="card mt8" style="padding:8px 6px" id="seglist">
+        <div class="seg on" onclick="pickSeg(this,3)"><div class="t">0:00</div><div class="tx"><span class="tag hook">钩子</span><br>如果你拍了 100 条视频还是 300 播放，问题不在内容，在你前 3 秒就说错了话。</div></div>
+        <div class="seg" onclick="pickSeg(this,13)"><div class="t">0:13</div><div class="tx">我先说结论：口播不是把稿子念完，是让对方在 3 秒内确认「这条跟我有关」。</div></div>
+        <div class="seg" onclick="pickSeg(this,26)"><div class="t">0:26</div><div class="tx">第一个动作，把自我介绍删掉。没人关心你是谁，只关心你能解决什么。</div></div>
+        <div class="seg" onclick="pickSeg(this,41)"><div class="t">0:41</div><div class="tx"><span class="tag pain">痛点</span><br>你是不是也这样：开头先感谢关注，再说今天想聊什么，讲到第 20 秒观众已经划走了。</div></div>
+        <div class="seg" onclick="pickSeg(this,58)"><div class="t">0:58</div><div class="tx"><span class="tag turn">转折</span><br>但真正的问题不是啰嗦，是你没有给对方一个「必须现在听」的理由。</div></div>
+        <div class="seg" onclick="pickSeg(this,74)"><div class="t">1:14</div><div class="tx"><span class="tag cta">CTA</span><br>把你最近一条视频的开头发在评论区，我挑 10 条改给你看。</div></div>
+      </div>
+
+      <div class="card flat mt16" style="display:flex;gap:10px;align-items:center">
+        <span style="font-size:16px">ⓘ</span>
+        <p class="tiny">仅供个人学习参考，请勿用于侵权用途。原视频已于 24 小时后删除。</p>
+      </div>
+    </section>
+    <section class="screen" id="s-structure">
+      <div class="between">
+        <button class="iconbtn" onclick="go('result')">←</button>
+        <h3 class="h3">爆款结构卡</h3>
+        <button class="iconbtn" onclick="toast('已保存到素材库')">☆</button>
+      </div>
+
+      <div class="card mt16">
+        <div class="score">
+          <div class="grow">
+            <p class="tiny">可复用性评分</p>
+            <div class="row" style="align-items:baseline;gap:6px"><span class="num">86</span><span class="tiny">/ 100</span></div>
+            <div class="bar"><i style="width:86%"></i></div>
+          </div>
+          <div style="text-align:right">
+            <span class="pill moss">强钩子</span>
+            <p class="tiny" style="margin-top:6px">超过 91% 的同赛道视频</p>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row gap8" style="flex-wrap:wrap">
+          <span class="pill line">职场</span><span class="pill line">口播</span><span class="pill line">1:24</span><span class="pill line">信息密度高</span>
+        </div>
+      </div>
+
+      <div class="card mt12" style="padding:16px 16px 8px">
+        <div class="struct hook">
+          <div class="between"><span class="tag hook">钩子 · 0-3s</span><span class="mono" style="color:var(--verm)">强度 92</span></div>
+          <p class="quote">"如果你拍了 100 条视频还是 300 播放，问题不在内容，在你前 3 秒就说错了话。"</p>
+          <p class="why">用了「具体数字 + 否定归因 + 制造认知冲突」三件套。先给一个可验证的失败场景，再把原因指向观众没想过的地方。</p>
+          <div class="tpl">可套用：如果你【做了 N 次】还是【没结果】，问题不在【表面原因】，在【反常识原因】。</div>
+        </div>
+        <div class="struct pain">
+          <div class="between"><span class="tag pain">痛点 · 0:41</span><span class="mono">强度 78</span></div>
+          <p class="quote">"开头先感谢关注，再说今天想聊什么，讲到第 20 秒观众已经划走了。"</p>
+          <p class="why">用"你是不是也这样"把观众的具体行为复述出来，命中率高于抽象描述。</p>
+        </div>
+        <div class="struct proof">
+          <div class="between"><span class="tag proof">证据 · 全篇</span><span class="mono">强度 71</span></div>
+          <p class="quote">"100 条 / 300 播放 / 3 秒 / 20 秒" —— 平均每 12 秒一个数字。</p>
+          <p class="why">数字让观点可感知。缺点是没有第三方案例，可信度还可以更高。</p>
+        </div>
+        <div class="struct turn">
+          <div class="between"><span class="tag turn">转折 · 0:58</span><span class="mono">强度 84</span></div>
+          <p class="quote">"但真正的问题不是啰嗦，是你没有给对方一个必须现在听的理由。"</p>
+          <p class="why">先承认表层原因，再抬到更高维度，是知识类口播最稳的转折句式。</p>
+        </div>
+        <div class="struct cta" style="margin-bottom:16px">
+          <div class="between"><span class="tag cta">CTA · 1:14</span><span class="mono">强度 88</span></div>
+          <p class="quote">"把开头发在评论区，我挑 10 条改给你看。"</p>
+          <p class="why">行动成本极低（复制一句），且有明确回报（被选中）。比"点赞关注"有效 3-5 倍。</p>
+        </div>
+      </div>
+
+      <button class="btn primary mt16" onclick="go('rewrite')">套用这个结构写我的</button>
+    </section>
+
+    <section class="screen" id="s-rewrite">
+      <div class="between">
+        <button class="iconbtn" onclick="go('structure')">←</button>
+        <h3 class="h3">二创</h3>
+        <span class="pill gold" style="height:24px">消耗 1 次</span>
+      </div>
+
+      <p class="sub mt16">保留原结构，换成你的行业和语气。</p>
+
+      <div class="card mt12">
+        <p class="tiny">你的行业</p>
+        <div class="chiprow mt8">
+          <button class="chip on" onclick="pickChip(this)">美妆</button>
+          <button class="chip" onclick="pickChip(this)">教育</button>
+          <button class="chip" onclick="pickChip(this)">本地生活</button>
+          <button class="chip" onclick="pickChip(this)">职场</button>
+          <button class="chip" onclick="pickChip(this)">家居</button>
+        </div>
+        <div class="between mt16"><p class="tiny">语气</p><p class="tiny" id="toneLabel">更口语</p></div>
+        <input class="slider mt8" type="range" min="0" max="100" value="28" oninput="document.getElementById('toneLabel').textContent=this.value<34?'更口语':this.value<67?'平衡':'更专业'">
+      </div>
+
+      <div class="col gap12 mt16">
+        <div class="vercard sel" onclick="selectVer(this)">
+          <div class="between"><span class="pill moss" style="height:22px;font-size:10px">版本 A · 强钩子</span><span class="tiny">128 字</span></div>
+          <p>如果你化了 3 年妆还是显脏，问题不在手法，在你第一步就选错了底妆。</p>
+          <p style="font-family:var(--sans);font-size:12px;line-height:20px;color:var(--ink2);margin-top:8px">后面接：痛点复述 → 反常识转折 → 评论区改作业</p>
+          <div class="row gap8 mt12"><button class="btn ghost small" onclick="event.stopPropagation();toast('已复制')">复制</button><button class="btn primary small" onclick="event.stopPropagation();toast('已采用')">采用</button></div>
+        </div>
+        <div class="vercard" onclick="selectVer(this)">
+          <div class="between"><span class="pill line" style="height:22px;font-size:10px">版本 B · 强痛点</span><span class="tiny">146 字</span></div>
+          <p>你有没有发现，同一盘眼影别人画是氛围感，你画就像被打了？不是你手残，是顺序反了。</p>
+          <p style="font-family:var(--sans);font-size:12px;line-height:20px;color:var(--ink2);margin-top:8px">后面接：三步演示 → 前后对比 → 收藏引导</p>
+          <div class="row gap8 mt12"><button class="btn ghost small" onclick="event.stopPropagation();toast('已复制')">复制</button><button class="btn primary small" onclick="event.stopPropagation();toast('已采用')">采用</button></div>
+        </div>
+        <div class="vercard" onclick="selectVer(this)">
+          <div class="between"><span class="pill line" style="height:22px;font-size:10px">版本 C · 强反差</span><span class="tiny">119 字</span></div>
+          <p>我让 20 个新手用同一套化妆品，只有 3 个人画对了。差距不在产品，在这一步。</p>
+          <p style="font-family:var(--sans);font-size:12px;line-height:20px;color:var(--ink2);margin-top:8px">后面接：实验数据 → 原因拆解 → 评论区答疑</p>
+          <div class="row gap8 mt12"><button class="btn ghost small" onclick="event.stopPropagation();toast('已复制')">复制</button><button class="btn primary small" onclick="event.stopPropagation();toast('已采用')">采用</button></div>
+        </div>
+      </div>
+
+      <div class="row gap8 mt16">
+        <button class="btn ghost" onclick="toast('已重新生成 3 版')">换一批</button>
+        <button class="btn primary" onclick="openTP()">进入提词器</button>
+      </div>
+    </section>
+
+    <section class="screen" id="s-upload">
+      <div class="between">
+        <button class="iconbtn" onclick="go('home')">←</button>
+        <h3 class="h3">上传提取</h3>
+        <span class="pill line" style="height:24px">最大 2GB</span>
+      </div>
+      <p class="sub mt16">没有链接？上传文件一样能提。支持相册视频、手机录音、微信语音、聊天文件。</p>
+
+      <div class="col gap12 mt16">
+        <div class="tile" onclick="toast('打开相册')">
+          <div class="ic v"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m8 14 2.5-2.5L14 15l2-2 3 3"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+          <div class="grow"><p class="h3">相册视频</p><p class="tiny">mp4 / mov，自动抽音轨</p></div>
+          <span class="tiny">›</span>
+        </div>
+        <div class="tile" onclick="toast('打开录音文件')">
+          <div class="ic a"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
+          <div class="grow"><p class="h3">录音 / 音频</p><p class="tiny">m4a / mp3 / wav / aac / amr / silk</p></div>
+          <span class="tiny">›</span>
+        </div>
+        <div class="tile" onclick="toast('选择聊天文件')">
+          <div class="ic f"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3v5h5M6 3h8l5 5v13H6V3Z"/><path d="M9 13h6M9 17h4"/></svg></div>
+          <div class="grow"><p class="h3">微信聊天文件</p><p class="tiny">转发的语音、视频、文档</p></div>
+          <span class="tiny">›</span>
+        </div>
+      </div>
+
+      <div class="card mt20">
+        <div class="between"><div class="row gap10"><div class="thumb up">M4A</div><div><p style="font-size:13px;font-weight:600">采访录音 1104.m4a</p><p class="tiny">47:12 · 62.4 MB</p></div></div><span class="mono" style="color:var(--verm)">68%</span></div>
+        <div class="progressline mt12"><i style="width:68%"></i></div>
+        <div class="between mt8"><span class="tiny">已上传 42.4 MB · 4.2 MB/s</span><span class="tiny">暂停</span></div>
+      </div>
+
+      <div class="card flat mt16">
+        <p class="tiny" style="line-height:19px">大文件自动分片，断网后可从断点继续。微信语音（.silk）会先转码，不用你处理。<br>原文件 24 小时后自动删除。</p>
+      </div>
+    </section>
+
+    <section class="screen" id="s-library">
+      <div class="between">
+        <h2 class="h2">素材库</h2>
+        <button class="iconbtn" onclick="toast('多选模式')">☰</button>
+      </div>
+      <div class="card flat mt16" style="display:flex;gap:8px;align-items:center;padding:0 14px;height:44px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink3)" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+        <input placeholder="搜索标题、作者、正文…" style="border:none;outline:none;background:transparent;font-family:var(--sans);font-size:13px;flex:1;color:var(--ink)">
+      </div>
+      <div class="chiprow mt12">
+        <button class="chip on" onclick="pickChip(this)">全部 18</button>
+        <button class="chip" onclick="pickChip(this)">抖音</button>
+        <button class="chip" onclick="pickChip(this)">B站</button>
+        <button class="chip" onclick="pickChip(this)">录音</button>
+        <button class="chip" onclick="pickChip(this)">已拆结构</button>
+      </div>
+
+      <div class="col gap12 mt16">
+        <div class="card" style="padding:12px" onclick="go('result')">
+          <div class="between"><span class="pill line" style="height:22px;font-size:10px">抖音</span><span class="tiny">11-04 14:22</span></div>
+          <p style="font-size:14px;line-height:21px;margin-top:8px;font-weight:600">3 个动作，让你的口播从 300 播到 30 万</p>
+          <p class="tiny" style="margin-top:4px">1:24 · 38 句 · 结构卡 86 分</p>
+          <div class="row gap6 mt8"><span class="pill moss" style="height:20px;font-size:10px">职场</span><span class="pill gold" style="height:20px;font-size:10px">强钩子</span></div>
+        </div>
+        <div class="card" style="padding:12px" onclick="go('result')">
+          <div class="between"><span class="pill line" style="height:22px;font-size:10px">B站</span><span class="tiny">11-03 20:06</span></div>
+          <p style="font-size:14px;line-height:21px;margin-top:8px;font-weight:600">为什么你的内容没人看？算法不背这个锅</p>
+          <p class="tiny" style="margin-top:4px">12:06 · 214 句 · 来自 CC 字幕</p>
+          <div class="row gap6 mt8"><span class="pill moss" style="height:20px;font-size:10px">运营</span><span class="pill gold" style="height:20px;font-size:10px">长文</span></div>
+        </div>
+        <div class="card" style="padding:12px">
+          <div class="between"><span class="pill line" style="height:22px;font-size:10px">录音</span><span class="tiny">11-03 09:41</span></div>
+          <p style="font-size:14px;line-height:21px;margin-top:8px;font-weight:600">采访录音 1104.m4a</p>
+          <p class="tiny" style="margin-top:4px">47:12 · 4 位说话人 · 已导出 Word</p>
+          <div class="row gap6 mt8"><span class="pill moss" style="height:20px;font-size:10px">访谈</span><span class="pill gold" style="height:20px;font-size:10px">说话人分离</span></div>
+        </div>
+      </div>
+      <div class="btn primary mt16" onclick="toast('已导出 3 条为 Excel')">导出选中</div>
+    </section>
+    <section class="screen" id="s-benefits">
+      <div class="between">
+        <h2 class="h2">福利中心</h2>
+        <span class="pill gold">积分 1,280</span>
+      </div>
+
+      <div class="card mt16">
+        <div class="between">
+          <div><p class="h3">连续签到 4 天</p><p class="tiny" style="margin-top:3px">再签 3 天，额外得 5 次</p></div>
+          <button class="btn verm small" id="signBtn" onclick="signIn()">今日签到 +1</button>
+        </div>
+        <div class="cal">
+          <div class="day done"><span>一</span><b>✓</b></div>
+          <div class="day done"><span>二</span><b>✓</b></div>
+          <div class="day done"><span>三</span><b>✓</b></div>
+          <div class="day done today"><span>四</span><b>✓</b></div>
+          <div class="day"><span>五</span><b>+1</b></div>
+          <div class="day"><span>六</span><b>+1</b></div>
+          <div class="day"><span>日</span><b>+5</b></div>
+        </div>
+      </div>
+
+      <h3 class="h3 mt20">今日任务</h3>
+      <div class="card mt8" style="padding:4px 14px">
+        <div class="taskrow">
+          <div class="ic v" style="width:36px;height:36px;border-radius:11px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor" stroke="none"/></svg></div>
+          <div class="grow"><p style="font-size:13px;font-weight:600">看视频再得 1 次</p><p class="tiny">15 秒，今日还可看 4 次</p></div>
+          <button class="btn ghost small" onclick="toast('+1 次，剩余 4 次')">去完成</button>
+        </div>
+        <div class="taskrow">
+          <div class="ic a" style="width:36px;height:36px;border-radius:11px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 19a4 4 0 0 0 0-8 6 6 0 1 0-11.3 2.8A3.5 3.5 0 0 0 6 19h10Z"/></svg></div>
+          <div class="grow"><p style="font-size:13px;font-weight:600">邀请 1 位好友</p><p class="tiny">双方各得 3 次，好友付费再得 7 天会员</p></div>
+          <button class="btn ghost small" onclick="toast('分享卡片已生成')">去邀请</button>
+        </div>
+        <div class="taskrow">
+          <div class="ic f" style="width:36px;height:36px;border-radius:11px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4"/><path d="M4 19h16"/></svg></div>
+          <div class="grow"><p style="font-size:13px;font-weight:600">导出 1 条稿子</p><p class="tiny">得 20 积分</p></div>
+          <button class="btn ghost small" onclick="go('library')">去导出</button>
+        </div>
+      </div>
+
+      <div class="card mt16" style="background:var(--moss);color:#EAF5F0;border-color:var(--moss)">
+        <div class="between">
+          <div><p class="h3" style="color:#fff">积分也能换会员</p><p style="font-size:12px;margin-top:4px;opacity:.8">1,200 积分 = 7 天会员</p></div>
+          <button class="btn small" style="background:#FFFFFF;color:#14110F" onclick="toast('兑换成功')">去兑换</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="s-vip">
+      <div class="between">
+        <button class="iconbtn" onclick="go('benefits')">←</button>
+        <h3 class="h3">升级会员</h3>
+        <span style="width:34px"></span>
+      </div>
+
+      <div class="card mt16" style="background:#0A0A0B;color:#fff;border:none">
+        <div class="between"><div><p class="brandline" style="color:#8A8F98">SCRIPT STUDIO PRO</p><p class="h2" style="color:#fff;margin-top:6px">AI 油费你自付，平台只收解析</p></div><span style="font-size:26px">·</span></div>
+        <div class="divider" style="background:#242428"></div>
+        <div class="benefit"><span class="ok" style="background:#1E3A5F;color:#BFD7FF">✓</span><span>自带 LLM / ASR Key，不限 AI 次数</span></div>
+        <div class="benefit"><span class="ok" style="background:#1E3A5F;color:#BFD7FF">✓</span><span>链接解析 + 结构卡 + 导出全解锁</span></div>
+        <div class="benefit"><span class="ok" style="background:#1E3A5F;color:#BFD7FF">✓</span><span>每天最高 100 条，单条 3 小时</span></div>
+        <div class="benefit"><span class="ok" style="background:#1E3A5F;color:#BFD7FF">✓</span><span>任务失败自动退回次数</span></div>
+      </div>
+
+      <div class="col gap12 mt16">
+        <div class="plan" onclick="pickPlan(this)">
+          <div class="between"><span class="h3">次数包</span><span class="tiny">不过期</span></div>
+          <div class="price">9.9<span> 元 / 30 次</span></div>
+        </div>
+        <div class="plan" onclick="pickPlan(this)">
+          <div class="between"><span class="h3">托管月卡</span><span class="tiny">怕麻烦选这个</span></div>
+          <div class="price">39<span> 元 / 300 次</span></div>
+        </div>
+        <div class="plan on" onclick="pickPlan(this)">
+          <div class="badge">主推 · 自带 Key 最省</div>
+          <div class="between"><span class="h3">BYOK 年卡</span><span class="tiny">每月 10.6 元</span></div>
+          <div class="price">128<span> 元 / 年</span></div>
+        </div>
+      </div>
+
+      <button class="btn verm mt16" onclick="toast('调起微信支付（安卓）')">立即开通 · 128 元 / 年</button>
+      <p class="tiny" style="text-align:center;margin-top:10px">iOS 端不支持小程序内购买，可下载 APP 开通或使用兑换码</p>
+      <div class="card flat mt12" style="text-align:center">
+        <p class="tiny">已有兑换码？<span style="color:var(--ink);font-weight:600">去兑换 ›</span></p>
+      </div>
+    </section>
+
+    <section class="screen" id="s-profile">
+      <div class="row gap12 mt8">
+        <div class="avatar">哲</div>
+        <div class="grow"><div class="row gap6"><p class="h3">阿哲</p><span class="pill gold" style="height:20px;font-size:10px">年卡会员</span></div><p class="tiny" style="margin-top:3px">已用 128 天 · 累计提取 412 条</p></div>
+        <button class="iconbtn">⚙</button>
+      </div>
+
+      <div class="card mt16">
+        <div class="between">
+          <div><p class="tiny">今日剩余</p><div class="row" style="align-items:baseline;gap:4px"><span class="mono" style="font-size:30px">97</span><span class="tiny">/ 100 次</span></div></div>
+          <button class="btn ghost small" onclick="go('benefits')">补充次数</button>
+        </div>
+        <div class="divider"></div>
+        <div class="between"><span class="tiny">会员到期</span><span class="tiny" style="color:var(--ink)">2027-11-04</span></div>
+      </div>
+
+      <div class="card mt12" style="padding:4px 14px">
+        <div class="listrow" onclick="go('benefits')"><div class="ic2">✦</div><span class="grow">福利中心</span><span class="pill verm" style="height:20px;font-size:10px">签到 +1</span></div>
+        <div class="listrow" onclick="go('keys')"><div class="ic2">K</div><span class="grow">API 密钥</span><span class="pill moss" style="height:20px;font-size:10px">BYOK</span></div>
+        <div class="listrow" onclick="toast('邀请海报已生成')"><div class="ic2">◎</div><span class="grow">邀请好友</span><span class="tiny">已赚 23 天会员</span></div>
+        <div class="listrow" onclick="go('library')"><div class="ic2">▤</div><span class="grow">我的素材库</span><span class="tiny">18 条 ›</span></div>
+        <div class="listrow" onclick="toast('暂无订单')"><div class="ic2">₩</div><span class="grow">订单与发票</span><span class="tiny">›</span></div>
+      </div>
+
+      <div class="card mt12" style="padding:4px 14px">
+        <div class="listrow"><div class="ic2">?</div><span class="grow">帮助与客服</span><span class="tiny">›</span></div>
+        <div class="listrow"><div class="ic2">ⓘ</div><span class="grow">隐私政策</span><span class="tiny">›</span></div>
+        <div class="listrow"><div class="ic2">↺</div><span class="grow">清理缓存</span><span class="tiny">12.4 MB ›</span></div>
+      </div>
+
+      <p class="tiny" style="text-align:center;margin-top:20px;line-height:19px">文案工作台 v1.0.0<br>仅供个人学习参考，请勿用于侵权用途</p>
+    </section>
+
+    <section class="screen" id="s-keys">
+      <div class="between">
+        <button class="iconbtn" onclick="go('profile')">←</button>
+        <h3 class="h3">API 密钥</h3>
+        <button class="iconbtn" onclick="toast('AES-256-GCM 加密，只显示后四位')">?</button>
+      </div>
+
+      <div class="card mt16" style="background:#F7F9FF;border-color:#DCE5FB">
+        <p class="h3">AI 成本你自付，平台只收解析与工作台</p>
+        <p class="sub mt8">配置自己的 Key 后，提取不再扣平台 AI 额度。密钥加密存储，任何页面都只显示后四位。</p>
+      </div>
+
+      <div class="between mt20">
+        <h3 class="h3">免费体验</h3>
+        <span class="tiny">每个功能 2 次</span>
+      </div>
+      <div class="card mt8" style="padding:4px 14px">
+        <div class="usage-row">
+          <div class="grow"><p style="font-size:13px">链接提取</p><p class="tiny">抖音 / 快手 / B站 / 小红书</p></div>
+          <div class="usage-bar"><i style="width:50%"></i></div>
+          <span class="mono" style="width:30px;text-align:right">1/2</span>
+        </div>
+        <div class="usage-row">
+          <div class="grow"><p style="font-size:13px">公众号文章</p><p class="tiny">正文、作者、发布时间</p></div>
+          <div class="usage-bar"><i style="width:0%"></i></div>
+          <span class="mono" style="width:30px;text-align:right">2/2</span>
+        </div>
+        <div class="usage-row">
+          <div class="grow"><p style="font-size:13px">录音提取</p><p class="tiny">m4a / mp3 / wav / silk</p></div>
+          <div class="usage-bar"><i style="width:0%"></i></div>
+          <span class="mono" style="width:30px;text-align:right">2/2</span>
+        </div>
+        <div class="usage-row">
+          <div class="grow"><p style="font-size:13px">相册视频</p><p class="tiny">自动抽取音轨</p></div>
+          <div class="usage-bar"><i style="width:0%"></i></div>
+          <span class="mono" style="width:30px;text-align:right">2/2</span>
+        </div>
+      </div>
+
+      <div class="between mt20"><h3 class="h3">我的密钥</h3><span class="tiny">最多各 1 个</span></div>
+
+      <div class="keycard mt8">
+        <div class="logo">ASR</div>
+        <div class="grow">
+          <div class="between"><p style="font-size:13px;font-weight:600">语音转写</p><span class="state">未配置</span></div>
+          <p class="tiny mt8">火山引擎 / OpenAI Whisper / 硅基流动</p>
+        </div>
+        <button class="btn ghost small" onclick="openKeySheet('asr')">配置</button>
+      </div>
+
+      <div class="keycard">
+        <div class="logo">LLM</div>
+        <div class="grow">
+          <div class="between"><p style="font-size:13px;font-weight:600">文案模型</p><span class="state on">已配置</span></div>
+          <p class="tiny mt8">DeepSeek · deepseek-chat · ****9f3c</p>
+        </div>
+        <button class="btn ghost small" onclick="toast('连接正常，延迟 412ms')">测试</button>
+      </div>
+
+      <div class="keycard">
+        <div class="logo">URL</div>
+        <div class="grow">
+          <div class="between"><p style="font-size:13px;font-weight:600">链接解析</p><span class="state platform">平台提供</span></div>
+          <p class="tiny mt8">账号池、签名与代理由平台维护，不可自定义</p>
+        </div>
+      </div>
+
+      <button class="btn primary mt16" onclick="openKeySheet('llm')">添加 / 更换密钥</button>
+
+      <div class="card flat mt12">
+        <p class="tiny" style="line-height:18px">安全：AES-256-GCM 加密 · 接口只返回后四位 · 可随时删除 · 不写入日志。<br>配置后，你的音频与文本会发送给你选择的服务商，请先阅读对方隐私政策。</p>
+      </div>
+    </section>
+    <div id="tp">
+      <div class="between">
+        <span class="mono" style="opacity:.6">提词器 · 1.0x</span>
+        <button class="iconbtn" style="border-color:#2B2F36;color:#FFFFFF" onclick="closeTP()">✕</button>
+      </div>
+      <div class="tpbody"><div class="tptext" id="tptext">如果你化了 3 年妆还是显脏，<br>问题不在手法，<br>在你第一步就选错了底妆。<br><br>你有没有发现，<br>同一盘眼影别人画是氛围感，<br>你画就像被打了？<br><br>不是你手残，<br>是顺序反了。<br><br>今天三步，<br>把顺序调过来。</div></div>
+      <div class="tpctrl">
+        <button class="btn ghost small" style="border-color:#2B2F36;color:#FFFFFF" onclick="tpToggle()" id="tpBtn">开始滚动</button>
+        <span class="tiny" style="color:#8B8375">上下滑动调速度</span>
+      </div>
+    </div>
+
+    <div class="sheet-mask" id="keymask" onclick="closeKeySheet()"></div>
+    <div class="sheet" id="keysheet">
+      <div class="handle"></div>
+      <div class="between">
+        <h3 class="h3">添加密钥</h3>
+        <button class="iconbtn" onclick="closeKeySheet()">✕</button>
+      </div>
+      <div class="tabs2 mt12">
+        <button class="on" id="tab-asr" onclick="setKeyKind('asr')">语音转写 ASR</button>
+        <button id="tab-llm" onclick="setKeyKind('llm')">文案模型 LLM</button>
+      </div>
+      <p class="tiny mt12">服务商</p>
+      <div class="chiprow mt8" id="providers">
+        <button class="chip on" onclick="pickChip(this)">DeepSeek</button>
+        <button class="chip" onclick="pickChip(this)">混元</button>
+        <button class="chip" onclick="pickChip(this)">通义</button>
+        <button class="chip" onclick="pickChip(this)">硅基流动</button>
+        <button class="chip" onclick="pickChip(this)">自定义</button>
+      </div>
+      <p class="tiny mt12">API Key</p>
+      <input class="field mt8" id="keyinput" placeholder="sk-...（保存后只显示后四位）" />
+      <p class="tiny mt12">Base URL（可选，OpenAI 兼容）</p>
+      <input class="field mt8" id="baseinput" placeholder="https://api.deepseek.com/v1" />
+      <button class="btn primary mt16" onclick="saveKey()">测试并保存</button>
+      <p class="tiny mt8" style="text-align:center">保存前会发一次最小请求验证，失败不会保存</p>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <nav class="tabbar" id="tabbar">
+      <button class="tab on" data-s="home" onclick="go('home')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5Z"/></svg>首页</button>
+      <button class="tab" data-s="library" onclick="go('library')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h6v14H4zM14 5h6v14h-6z"/><path d="M4 9h6M14 9h6"/></svg>素材库</button>
+      <button class="tab" data-s="benefits" onclick="go('benefits')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 9h16v11H4zM2 5h20v4H2zM12 5v15"/></svg>福利</button>
+      <button class="tab" data-s="profile" onclick="go('profile')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>我的</button>
+    </nav>
+  </div>
+
+  <aside class="notes">
+    <h4>文案工作台</h4>
+    <p>12 屏可点击原型。手机里的按钮都能点，右侧可以直接跳屏。</p>
+    <div class="jump">
+      <button onclick="go('home')">首页 / 粘贴框 <span>01</span></button>
+      <button onclick="startParse()">解析中 <span>02</span></button>
+      <button onclick="go('result')">结果 / 逐句时间轴 <span>03</span></button>
+      <button onclick="go('structure')">爆款结构卡 <span>04</span></button>
+      <button onclick="go('rewrite')">二创 <span>05</span></button>
+      <button onclick="openTP()">提词器 <span>06</span></button>
+      <button onclick="go('upload')">上传大文件 <span>07</span></button>
+      <button onclick="go('library')">素材库 <span>08</span></button>
+      <button onclick="go('benefits')">签到 / 福利 <span>09</span></button>
+      <button onclick="go('vip')">会员 <span>10</span></button>
+      <button onclick="go('profile')">我的 <span>11</span></button>
+      <button onclick="go('keys')">API 密钥 <span>12</span></button>
+    </div>
+    <div class="legend">
+      <b>极简色板</b>
+      <div class="swatches">
+        <i style="background:#FFFFFF"></i><i style="background:#0A0A0B"></i>
+        <i style="background:#2563EB"></i><i style="background:#0B7A4B"></i>
+        <i style="background:#6B7280"></i><i style="background:#ECECEE"></i>
+      </div>
+      字体：全站无衬线 / 数字等宽<br>
+      圆角：卡片 16 · 按钮 12 · 标签 999<br>
+      动效：280ms cubic-bezier(.2,.8,.2,1)
+    </div>
+  </aside>
+</div>
+
+<script>
+const screens = [...document.querySelectorAll('.screen')];
+const tabbar = document.getElementById('tabbar');
+const tabs = [...document.querySelectorAll('.tab')];
+function go(id){
+  screens.forEach(s => s.classList.toggle('active', s.id === 's-' + id));
+  const key = ['home','library','benefits','profile'].includes(id) ? id : null;
+  tabs.forEach(t => t.classList.toggle('on', t.dataset.s === key));
+  tabbar.style.display = (id === 'parse' || id === 'keys') ? 'none' : 'flex';
+  document.getElementById('s-' + id).scrollTop = 0;
+  if(id === 'parse') resetParse();
+}
+go((location.hash||'#home').slice(1));
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(window.__t);
+  window.__t = setTimeout(() => el.classList.remove('show'), 1600);
+}
+function pickChip(el){
+  [...el.parentElement.children].forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+function pickSeg(el, sec){
+  [...document.querySelectorAll('.seg')].forEach(s => s.classList.remove('on'));
+  el.classList.add('on');
+  toast('已跳到 ' + Math.floor(sec/60) + ':' + String(sec%60).padStart(2,'0'));
+}
+function pickPlan(el){
+  [...el.parentElement.children].forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  const price = el.querySelector('.price').textContent.trim().replace(/\s+/g,' ');
+  document.querySelector('#s-vip .btn.verm').textContent = '立即开通 · ' + price;
+}
+function selectVer(el){
+  [...el.parentElement.children].forEach(v => v.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function signIn(){
+  const b = document.getElementById('signBtn');
+  b.textContent = '已签到 +1';
+  b.disabled = true;
+  toast('签到成功，获得 1 次提取');
+}
+let timer = null, p = 0;
+function resetParse(){
+  p = 0;
+  document.getElementById('ring').style.strokeDashoffset = 402;
+  document.getElementById('pct').textContent = '0%';
+  [...document.querySelectorAll('.stage-item')].forEach((s,i) => {
+    s.className = 'stage-item' + (i === 0 ? ' now' : '');
+    s.querySelector('.dot').textContent = i + 1;
+  });
+  clearInterval(timer);
+  timer = setInterval(tick, 260);
+}
+function tick(){
+  p = Math.min(96, p + Math.random() * 7 + 2);
+  const pct = Math.round(p);
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('ring').style.strokeDashoffset = 402 - 402 * p / 100;
+  const stage = Math.min(4, Math.floor(p / 20));
+  [...document.querySelectorAll('.stage-item')].forEach((s,i) => {
+    if(i < stage){ s.className = 'stage-item done'; s.querySelector('.dot').textContent = '✓'; }
+    else if(i === stage){ s.className = 'stage-item now'; s.querySelector('.dot').textContent = i + 1; }
+    else { s.className = 'stage-item'; s.querySelector('.dot').textContent = i + 1; }
+  });
+  if(p >= 96){ clearInterval(timer); setTimeout(finishParse, 600); }
+}
+function startParse(){ go('parse'); }
+function finishParse(){
+  clearInterval(timer);
+  document.getElementById('pct').textContent = '100%';
+  document.getElementById('ring').style.strokeDashoffset = 0;
+  [...document.querySelectorAll('.stage-item')].forEach(s => {
+    s.className = 'stage-item done';
+    s.querySelector('.dot').textContent = '✓';
+  });
+  setTimeout(() => go('result'), 420);
+}
+let tpTimer = null, tpY = 0, tpRunning = false;
+function openTP(){
+  document.getElementById('tp').classList.add('show');
+  tpY = 0; tpRunning = false;
+  document.getElementById('tptext').style.transform = 'translateY(0)';
+  document.getElementById('tpBtn').textContent = '开始滚动';
+}
+function closeTP(){
+  document.getElementById('tp').classList.remove('show');
+  cancelAnimationFrame(tpTimer); tpRunning = false;
+}
+function tpToggle(){
+  tpRunning = !tpRunning;
+  document.getElementById('tpBtn').textContent = tpRunning ? '暂停' : '开始滚动';
+  if(tpRunning) loopTP();
+}
+function loopTP(){
+  if(!tpRunning) return;
+  tpY -= 0.45;
+  document.getElementById('tptext').style.transform = 'translateY(' + tpY + 'px)';
+  tpTimer = requestAnimationFrame(loopTP);
+}
+function setKeyKind(kind){
+  document.getElementById('tab-asr').classList.toggle('on', kind === 'asr');
+  document.getElementById('tab-llm').classList.toggle('on', kind === 'llm');
+  const box = document.getElementById('providers');
+  box.innerHTML = kind === 'asr'
+    ? '<button class="chip on" onclick="pickChip(this)">OpenAI Whisper</button><button class="chip" onclick="pickChip(this)">硅基流动</button><button class="chip" onclick="pickChip(this)">火山引擎</button><button class="chip" onclick="pickChip(this)">自定义</button>'
+    : '<button class="chip on" onclick="pickChip(this)">DeepSeek</button><button class="chip" onclick="pickChip(this)">混元</button><button class="chip" onclick="pickChip(this)">通义</button><button class="chip" onclick="pickChip(this)">硅基流动</button><button class="chip" onclick="pickChip(this)">自定义</button>';
+  document.getElementById('keyinput').placeholder = kind === 'asr' ? 'AppID:Token:Cluster 或 sk-...' : 'sk-...';
+}
+function openKeySheet(kind){
+  setKeyKind(kind || 'llm');
+  document.getElementById('keymask').classList.add('show');
+  document.getElementById('keysheet').classList.add('show');
+}
+function closeKeySheet(){
+  document.getElementById('keymask').classList.remove('show');
+  document.getElementById('keysheet').classList.remove('show');
+}
+function saveKey(){
+  const v = (document.getElementById('keyinput').value || '').trim();
+  if (!v) return toast('先填 API Key');
+  toast('验证通过，已加密保存');
+  document.getElementById('keyinput').value = '';
+  closeKeySheet();
+}
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+

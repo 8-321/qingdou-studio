@@ -1,0 +1,12 @@
+page{background:#0A0A0B;height:100%}
+.pr{height:100vh;display:flex;flex-direction:column;background:#0A0A0B;color:#fff}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:24rpx 32rpx;font-size:24rpx;color:rgba(255,255,255,.62)}
+.name{max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-weight:600}
+.back,.state{padding:8rpx 16rpx;border:1rpx solid rgba(255,255,255,.18);border-radius:999rpx}
+.state.on{color:#8AB4FF;border-color:#2563EB}
+.stage{flex:1;height:0;min-height:0;padding:0 44rpx}
+.pad{height:34vh}
+.line{line-height:1.85;font-weight:500;margin-bottom:44rpx;letter-spacing:1rpx}
+.ctrl{display:flex;align-items:center;gap:14rpx;padding:24rpx 28rpx 44rpx;background:#0A0A0B;border-top:1rpx solid rgba(255,255,255,.1)}
+.ctl{width:88rpx;height:88rpx;display:flex;align-items:center;justify-content:center;border:1rpx solid rgba(255,255,255,.2);border-radius:20rpx;font-size:24rpx;color:rgba(255,255,255,.8)}
+.main{flex:1;height:96rpx;display:flex;align-items:center;justify-content:center;background:#2563EB;color:#fff;border-radius:24rpx;font-size:30rpx;font-weight:600}

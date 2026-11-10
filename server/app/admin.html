@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文案工作台 · 管理后台</title>
+<style>
+:root{--ink:#0A0A0B;--ink2:#5B616B;--ink3:#8A8F98;--line:#ECECEE;--bg:#F6F7F9;--blue:#2563EB;--green:#0B7A4B;--red:#D93025}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center}
+.login .box{width:340px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px}
+.brand{font-size:12px;letter-spacing:2px;color:var(--ink3)}
+h1{font-size:24px;margin:6px 0 18px;letter-spacing:-.5px}
+input,select{height:40px;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:#fff;outline:none;width:100%}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.btn{height:40px;border-radius:10px;border:1px solid var(--line);background:#fff;padding:0 14px}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn.sm{height:30px;padding:0 10px;font-size:12px;border-radius:8px}
+.app{min-height:100vh;display:grid;grid-template-columns:210px 1fr}
+aside{background:#fff;border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh}
+aside .brand{padding:0 10px}
+aside h2{font-size:17px;margin:6px 10px 22px}
+nav button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:9px;color:var(--ink2);margin-bottom:2px}
+nav button.on{background:#EEF3FF;color:var(--blue);font-weight:600}
+main{padding:26px 30px;max-width:1180px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.top h3{margin:0;font-size:20px;letter-spacing:-.4px}
+.muted{color:var(--ink3);font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.card .n{font-size:26px;font-weight:600;letter-spacing:-.5px;margin-top:4px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+th{background:#FAFAFB;color:var(--ink3);font-weight:500;font-size:12px}
+tr:last-child td{border-bottom:0}
+.tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#F3F4F6;color:var(--ink2);font-size:11px}
+.tag.pro{background:#EEF3FF;color:var(--blue)}.tag.team{background:#E8F5EF;color:var(--green)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.form .full{grid-column:1/-1}
+.hidden{display:none!important}
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px}
+.tablewrap table{min-width:680px}
+.hint{background:#EEF3FF;border:1px solid #D9E4FF;color:#1D4ED8;border-radius:12px;padding:10px 12px;font-size:12px;margin-top:12px}
+#modal{position:fixed;inset:0;background:rgba(10,10,11,.35);display:flex;align-items:center;justify-content:center;padding:20px}
+#modal .box{background:#fff;border-radius:16px;padding:20px;width:min(760px,100%);max-height:86vh;overflow:auto}
+pre{background:#FAFAFB;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;font-size:12px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#0A0A0B;color:#fff;padding:9px 16px;border-radius:999px;font-size:12px;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:860px){body{overflow-x:hidden}.app{display:block;min-height:0}.app>*{min-width:0}aside{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:14px 12px}aside h2{margin:2px 10px 12px}nav{display:flex;overflow-x:auto;gap:4px;max-width:100%}nav button{white-space:nowrap;width:auto;margin-bottom:0;flex:none}.cards{grid-template-columns:repeat(2,1fr)}.form{grid-template-columns:1fr}main{padding:18px 16px;min-width:0;width:100%;max-width:100%}.top h3{font-size:18px}.tablewrap{min-width:0}}
+@media(max-width:640px){#tab-config table,#tab-users table,#tab-redeem table{min-width:0}#tab-config th:last-child,#tab-config td:last-child{display:none}#tab-users th:nth-child(2),#tab-users td:nth-child(2),#tab-users th:nth-child(3),#tab-users td:nth-child(3),#tab-users th:nth-child(4),#tab-users td:nth-child(4){display:none}#tab-users td .row{gap:4px;flex-wrap:nowrap}#tab-users .btn.sm{padding:0 6px;font-size:11px;height:26px;white-space:nowrap}#tab-redeem th:nth-child(5),#tab-redeem td:nth-child(5){display:none}#tab-audit th:nth-child(1),#tab-audit td:nth-child(1){display:none}aside h2{display:none}aside{padding:12px}aside .btn.sm{position:absolute;right:12px;top:12px;margin:0!important;height:28px}main{padding:14px 14px 40px}.top{margin-bottom:12px}.top h3{font-size:17px}}
+@media(max-width:480px){.cards{grid-template-columns:repeat(2,1fr)}.card .n{font-size:22px}main{padding:14px 12px}.login .box{width:100%;margin:16px}}
+</style>
+</head>
+<body>
+<div id="login" class="login">
+  <div class="box">
+    <div class="brand">SCRIPT STUDIO</div>
+    <h1>管理后台</h1>
+    <input id="pwd" type="password" placeholder="管理员密码" autocomplete="current-password">
+    <button class="btn primary" style="width:100%;margin-top:12px" onclick="doLogin()">登录</button>
+    <p class="muted" style="margin:12px 0 0">仅限内部使用。生产环境请加 IP 白名单和 2FA。</p>
+    <div class="hint">手机端无需密码：打开微信小程序「我的 → 管理后台」，或在 APP 内用同一账号进入。</div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside>
+    <div class="brand">SCRIPT STUDIO</div>
+    <h2>管理后台</h2>
+    <nav>
+      <button data-tab="overview" class="on" onclick="nav('overview')">概览</button>
+      <button data-tab="config" onclick="nav('config')">功能额度</button>
+      <button data-tab="users" onclick="nav('users')">用户</button>
+      <button data-tab="admins" onclick="nav('admins')">协管员</button>
+      <button data-tab="redeem" onclick="nav('redeem')">兑换码</button>
+      <button data-tab="audit" onclick="nav('audit')">审计日志</button>
+    </nav>
+    <button class="btn sm" style="margin:18px 10px 0" onclick="logout()">退出登录</button>
+  </aside>
+  <main>
+    <div class="top"><div><h3 id="title">概览</h3><div class="muted" id="subtitle">数据每刷新一次更新</div></div><button class="btn sm" onclick="refresh()">刷新</button></div>
+
+    <section id="tab-overview">
+      <div class="cards" id="stats"></div>
+      <div class="card" style="margin-top:14px"><div class="muted">成本提示</div><p style="margin:6px 0 0">免费次数只在成功出稿时扣；失败自动退回。录音/视频建议限 3 分钟，避免长音频烧钱。</p></div>
+    </section>
+
+    <section id="tab-config" class="hidden">
+      <div class="card" style="margin-bottom:14px"><b>默认值</b><span class="muted" id="defaultLimit"></span></div>
+      <div class="tablewrap"><table><thead><tr><th>功能</th><th>免费次数</th><th>操作</th></tr></thead><tbody id="configBody"></tbody></table></div>
+      <p class="muted">单功能设置会覆盖全局默认；用户级补偿在“用户”页单独加。</p>
+      <div class="card" style="margin-top:14px">
+        <b>激励视频</b>
+        <span class="muted" id="adState"></span>
+        <div class="row" style="margin-top:10px">
+          <input id="adDaily" type="number" min="0" max="20" style="max-width:110px">
+          <button class="btn sm primary" onclick="saveGrowth()">保存每日上限</button>
+        </div>
+        <p class="muted">用户每完整看完 1 条，+1 次链接提取；0 = 关闭。广告位 ID 由环境变量 AD_UNIT_ID 决定。</p>
+      </div>
+    </section>
+
+    <section id="tab-users" class="hidden">
+      <div class="row" style="margin-bottom:12px"><input id="userQ" placeholder="搜索 user_id" style="max-width:280px"><button class="btn" onclick="loadUsers()">搜索</button></div>
+      <div class="tablewrap"><table><thead><tr><th>用户</th><th>会员</th><th>额度</th><th>链接/录音已用</th><th>操作</th></tr></thead><tbody id="userBody"></tbody></table></div>
+    </section>
+
+    <section id="tab-admins" class="hidden">
+      <div class="hint">协管员用「用户 ID」添加，不是手机号。对方打开小程序就能在「我的」看到管理入口。</div>
+      <div class="form" style="margin-top:14px">
+        <input id="newAdmin" placeholder="对方 user_id，例如 u_123456">
+        <input id="newAdminNote" placeholder="备注（可选）">
+        <button class="btn primary" onclick="addAdmin()">添加协管员</button>
+      </div>
+      <div class="tablewrap"><table><thead><tr><th>用户 ID</th><th>角色</th><th>来源</th><th>备注</th><th>操作</th></tr></thead><tbody id="adminBody"></tbody></table></div>
+      <p class="muted">写在环境变量 ADMIN_USER_IDS 里的创始管理员不能在这里移除，需要改服务器配置。</p>
+    </section>
+
+    <section id="tab-redeem" class="hidden">
+      <div class="form">
+        <input id="rcode" placeholder="兑换码，如 VIP2026">
+        <select id="rproduct"></select>
+        <input id="ruses" type="number" value="1" min="1" placeholder="可用次数">
+        <input id="rdays" type="number" value="30" min="0" placeholder="有效天数">
+        <button class="btn primary full" onclick="createRedeem()">生成兑换码</button>
+      </div>
+      <div class="tablewrap"><table><thead><tr><th>兑换码</th><th>商品</th><th>已用/上限</th><th>到期</th><th>创建时间</th></tr></thead><tbody id="redeemBody"></tbody></table></div>
+    </section>
+
+    <section id="tab-audit" class="hidden">
+      <div class="tablewrap"><table><thead><tr><th>时间</th><th>管理员</th><th>动作</th><th>对象</th><th>详情</th></tr></thead><tbody id="auditBody"></tbody></table></div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="hidden" onclick="if(event.target.id==='modal')closeModal()"><div class="box"><div class="row" style="justify-content:space-between"><b>用户详情</b><button class="btn sm" onclick="closeModal()">关闭</button></div><div id="modalBody" style="margin-top:12px"></div></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+let token = sessionStorage.getItem("admin_token") || "";
+let startTab = "";
+(function takeTokenFromHash(){
+  const h = (location.hash || "").replace(/^#/, "");
+  const q = new URLSearchParams(h);
+  const t = q.get("t");
+  startTab = q.get("tab") || "";
+  if (t) { token = t; sessionStorage.setItem("admin_token", t); history.replaceState(null, "", location.pathname); }
+})();
+let products = [];
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),1600)}
+async function api(path, opts={}){
+  const r = await fetch(path, {...opts, headers:{"Content-Type":"application/json", ...(opts.headers||{}), ...(token?{"Authorization":"Bearer "+token}:{})}});
+  const body = await r.json().catch(()=>({}));
+  if(r.status===401){logout();throw new Error("登录已过期")}
+  if(!r.ok) throw new Error((body.detail&&body.detail.msg)||"请求失败");
+  return body;
+}
+async function doLogin(){
+  try{
+    const r = await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:$("#pwd").value})});
+    const b = await r.json();
+    if(!r.ok) throw new Error((b.detail&&b.detail.msg)||"密码错误");
+    token=b.token;sessionStorage.setItem("admin_token",token);showApp();
+  }catch(e){toast(e.message)}
+}
+function logout(){token="";sessionStorage.removeItem("admin_token");history.replaceState(null,"",location.pathname);$("#app").classList.add("hidden");$("#login").classList.remove("hidden")}
+function showApp(){$("#login").classList.add("hidden");$("#app").classList.remove("hidden");nav(["overview","config","users","admins","redeem","audit"].indexOf(startTab)>-1?startTab:"overview")}
+function nav(tab){
+  ["overview","config","users","admins","redeem","audit"].forEach(t=>$("#tab-"+t).classList.toggle("hidden",t!==tab));
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
+  const titles={overview:["概览","数据每刷新一次更新"],config:["功能额度","全局默认 + 单功能覆盖"],users:["用户","补偿次数、加额度、开会员"],admins:["协管员","用 user_id 添加，最多几个人一起管"],redeem:["兑换码","企业采购 / 活动 / iOS 用户"],audit:["审计日志","谁在什么时候改了什么"]};
+  $("#title").textContent=titles[tab][0];$("#subtitle").textContent=titles[tab][1];
+  if(tab==="overview")loadOverview();
+  if(tab==="config"){loadConfig();loadGrowth();}
+  if(tab==="users")loadUsers();
+  if(tab==="admins")loadAdmins();
+  if(tab==="redeem")loadRedeem();
+  if(tab==="audit")loadAudit();
+}
+function refresh(){const on=document.querySelector("nav button.on");nav(on?on.dataset.tab:"overview")}
+async function loadOverview(){
+  const d=await api("/api/admin/overview");
+  $("#stats").innerHTML=[["用户数",d.users],["今日任务",d.tasks_today],["今日成功率",d.success_rate+"%"],["累计收入","¥"+(d.revenue_cent/100).toFixed(2)],["今日拦截",d.sec_blocked_today],["自备 Key 用户",d.keys],["累计邀请",d.invites_total],["今日视频奖励",d.ad_rewards_today]].map(([k,v])=>`<div class="card"><div class="muted">${k}</div><div class="n">${esc(v)}</div></div>`).join("");
+  $("#subtitle").textContent=`今日成功 ${d.done_today} · 失败 ${d.failed_today} · 安全拦截 ${d.sec_blocked_today} · 未消耗额度 ${d.credits_outstanding} 次`;
+}
+async function loadConfig(){
+  const d=await api("/api/admin/config");$("#defaultLimit").textContent="  FREE_FEATURE_TRIES = "+d.default;
+  $("#configBody").innerHTML=d.items.map(x=>`<tr><td>${esc(x.name)}<div class="muted">${esc(x.feature)}</div></td><td><input id="lim_${esc(x.feature)}" type="number" min="0" max="100" value="${x.free_tries}" style="max-width:90px" onchange="saveLimit('${esc(x.feature)}')"></td><td><button class="btn sm primary" onclick="saveLimit('${esc(x.feature)}')">保存</button></td></tr>`).join("");
+}
+async function loadGrowth(){
+  const g=await api("/api/admin/growth");
+  $("#adDaily").value=g.ad_reward_daily;
+  $("#adState").textContent=g.ad_enabled?"  已开通广告位":"  未配置 AD_UNIT_ID（前端显示未开通）";
+}
+async function saveGrowth(){
+  const v=Number($("#adDaily").value);
+  await api("/api/admin/growth",{method:"POST",body:JSON.stringify({ad_reward_daily:v})});
+  toast("已保存");loadGrowth();
+}
+async function saveLimit(feature){
+  const v=Number($("#lim_"+feature).value);
+  await api("/api/admin/config",{method:"POST",body:JSON.stringify({feature,free_tries:v})});toast("已保存");loadConfig();
+}
+async function loadUsers(){
+  const q=encodeURIComponent($("#userQ").value.trim());
+  const d=await api("/api/admin/users?q="+q);
+  $("#userBody").innerHTML=d.items.map(u=>`<tr><td><b>${esc(u.id)}</b><div class="muted">${esc(u.created_at)}</div></td><td><span class="tag ${esc(u.plan)}">${esc(u.plan)}</span></td><td>${u.credits}</td><td>${u.used_link} / ${u.used_audio}</td><td><div class="row"><button class="btn sm" onclick="grant('${esc(u.id)}')">+3 次</button><button class="btn sm" onclick="addCredits('${esc(u.id)}')">+30 额度</button><button class="btn sm" onclick="openUser('${esc(u.id)}')">详情</button></div></td></tr>`).join("")||`<tr><td colspan="5" class="muted">没有用户</td></tr>`;
+}
+async function grant(uid){
+  const n=prompt("给哪个功能加次数？输入数字：\n1 链接提取\n2 公众号\n3 录音\n4 相册视频","1");
+  const map={"1":"link_extract","2":"article_extract","3":"audio_extract","4":"video_extract"};
+  if(!map[n])return;
+  const tries=Number(prompt("加几次？","3")||0);if(!tries)return;
+  const days=Number(prompt("有效天数，0=永久","0")||0);
+  await api("/api/admin/grants",{method:"POST",body:JSON.stringify({user_id:uid,feature:map[n],extra_tries:tries,days,reason:"后台补偿"})});
+  toast("已补偿");loadUsers();
+}
+async function addCredits(uid){
+  const n=Number(prompt("加多少额度？可为负数","30")||0);if(!n)return;
+  await api("/api/admin/credits",{method:"POST",body:JSON.stringify({user_id:uid,amount:n,reason:"后台调整"})});
+  toast("额度已更新");loadUsers();
+}
+async function openUser(uid){
+  const d=await api("/api/admin/users/"+encodeURIComponent(uid));
+  $("#modalBody").innerHTML=`<p><b>${esc(uid)}</b> · ${esc(d.plan.plan)} · 额度 ${d.plan.credits} · 到期 ${esc(d.plan.plan_until||"—")}</p><p class="muted">免费使用</p><pre>${esc(JSON.stringify(d.usage,null,2))}</pre><p class="muted">补偿记录</p><pre>${esc(JSON.stringify(d.grants,null,2))}</pre><p class="muted">最近订单</p><pre>${esc(JSON.stringify(d.orders,null,2))}</pre>`;
+  $("#modal").classList.remove("hidden");
+}
+function closeModal(){$("#modal").classList.add("hidden")}
+async function loadAdmins(){
+  const d=await api("/api/admin/admins");
+  $("#adminBody").innerHTML=d.items.map(x=>`<tr><td><b>${esc(x.user_id)}</b></td><td><span class="tag ${esc(x.role)}">${esc(x.role)}</span></td><td>${x.source==="env"?"环境变量":"后台添加"}</td><td>${esc(x.note||"—")}</td><td>${x.source==="env"?`<span class="muted">改服务器配置</span>`:`<button class="btn sm" onclick="removeAdmin('${esc(x.user_id)}')">移除</button>`}</td></tr>`).join("")||`<tr><td colspan="5" class="muted">还没有协管员</td></tr>`;
+}
+async function addAdmin(){
+  const uid=$("#newAdmin").value.trim();if(!uid)return toast("先填用户 ID");
+  await api("/api/admin/admins",{method:"POST",body:JSON.stringify({user_id:uid,note:$("#newAdminNote").value.trim()})});
+  $("#newAdmin").value="";$("#newAdminNote").value="";toast("已添加");loadAdmins();
+}
+async function removeAdmin(uid){
+  if(!confirm("移除协管员 "+uid+"？"))return;
+  await api("/api/admin/admins/"+encodeURIComponent(uid),{method:"DELETE"});toast("已移除");loadAdmins();
+}
+async function loadRedeem(){
+  if(!products.length){const p=await api("/api/products");products=p.items;$("#rproduct").innerHTML=products.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} · ¥${esc(x.price_yuan)}</option>`).join("")}
+  const d=await api("/api/admin/redeem");
+  $("#redeemBody").innerHTML=d.items.map(x=>`<tr><td><b>${esc(x.code)}</b></td><td>${esc(x.product_id)}</td><td>${x.used}/${x.max_uses}</td><td>${esc(x.expires_at||"—")}</td><td>${esc(x.created_at)}</td></tr>`).join("")||`<tr><td colspan="5" class="muted">还没有兑换码</td></tr>`;
+}
+async function createRedeem(){
+  const code=$("#rcode").value.trim();if(!code)return toast("先填兑换码");
+  await api("/api/admin/redeem",{method:"POST",body:JSON.stringify({code,product_id:$("#rproduct").value,max_uses:Number($("#ruses").value||1),days:Number($("#rdays").value||0)})});
+  $("#rcode").value="";toast("已生成");loadRedeem();
+}
+async function loadAudit(){
+  const d=await api("/api/admin/audit");
+  $("#auditBody").innerHTML=d.items.map(x=>`<tr><td>${esc(x.created_at)}</td><td>${esc(x.admin)}</td><td><span class="tag">${esc(x.action)}</span></td><td>${esc(x.target)}</td><td>${esc(x.detail)}</td></tr>`).join("")||`<tr><td colspan="5" class="muted">暂无记录</td></tr>`;
+}
+if(token)showApp();
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<view class="wrap">
+  <view class="between">
+    <view class="h2">福利中心</view>
+    <view class="pill blue">{{credits}} 次额度</view>
+  </view>
+
+  <view class="card mt12">
+    <view class="between">
+      <view>
+        <view class="h3">每日签到</view>
+        <view class="tiny mt8">每天 +1 次链接提取，连续 7 天额外得 5 次</view>
+      </view>
+      <button class="btn primary sm" bindtap="signin" disabled="{{quota.signed}}">{{quota.signed ? '已签到' : '签到 +1'}}</button>
+    </view>
+  </view>
+
+  <view class="card mt12">
+    <view class="between">
+      <view>
+        <view class="h3">看视频 +1 次</view>
+        <view class="tiny mt8">完整看完一条，今天还能领 {{rewards.left_today || 0}} / {{rewards.daily_limit || 0}} 次</view>
+      </view>
+      <button class="btn ghost sm" bindtap="watchAd" loading="{{adLoading}}" disabled="{{!rewards.enabled || !rewards.left_today}}">{{!rewards.enabled ? '未开通' : (rewards.left_today ? '看视频 +1' : '明天再来')}}</button>
+    </view>
+  </view>
+
+  <view class="between mt12">
+    <text class="h3">开通 / 充值</text>
+    <text class="tiny">{{plan === 'free' ? '免费版' : plan === 'pro' ? 'BYOK 会员' : '团队版'}}</text>
+  </view>
+
+  <view wx:for="{{products}}" wx:key="id" class="card product {{selected === item.id ? 'on' : ''}}"
+        bindtap="pickProduct" data-id="{{item.id}}">
+    <view class="between">
+      <view class="grow">
+        <view class="row" style="gap:10rpx">
+          <text class="h3">{{item.name}}</text>
+          <text class="pill line sm">{{item.credits ? item.credits + ' 次' : item.days + ' 天'}}</text>
+        </view>
+        <view class="tiny mt8">{{item.note}}</view>
+      </view>
+      <view class="price">¥{{item.price_yuan}}</view>
+    </view>
+  </view>
+
+  <button class="btn primary mt12" bindtap="pay" loading="{{loading}}">立即开通</button>
+  <view class="tiny center mt8">iOS 端请用兑换码或到 APP 开通；安卓可直接支付</view>
+
+  <view class="card mt12">
+    <view class="h3">兑换码</view>
+    <view class="tiny mt8">企业采购、活动赠送、iOS 用户都用这里</view>
+    <input class="inp" value="{{code}}" bindinput="onCode" placeholder="输入兑换码" />
+    <button class="btn ghost mt8" bindtap="redeem">兑换</button>
+  </view>
+
+  <view class="card mt12">
+    <view class="between">
+      <view>
+        <view class="h3">邀请好友</view>
+        <view class="tiny mt8">双方各得 3 次；好友首次付费，你再得 7 天会员</view>
+      </view>
+      <text class="pill blue">已邀 {{invite.invited || 0}} 人</text>
+    </view>
+    <view class="codebox mt12">
+      <view>
+        <view class="tiny">我的邀请码</view>
+        <view class="code">{{invite.code || '······'}}</view>
+      </view>
+      <button class="btn ghost sm" bindtap="copyInvite">复制</button>
+    </view>
+    <button class="btn primary mt8" open-type="share">发给好友</button>
+    <view class="tiny mt12">好友填了你的码：{{invite.rewarded || 0}} 人已付费 · 累计 {{invite.reward_days || 0}} 天会员</view>
+
+    <view class="invite-bind mt12">
+      <input class="inp" value="{{inviteInput}}" bindinput="onInviteInput" placeholder="填好友的邀请码，双方各 +3 次" />
+      <button class="btn ghost sm mt8" bindtap="bindInvite">绑定邀请码</button>
+    </view>
+  </view>
+</view>

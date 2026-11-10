@@ -1,0 +1,34 @@
+<view class="wrap">
+  <view class="h2">上传提取</view>
+  <view class="sub mt8">没有链接也能提。原文件 24 小时后自动删除。</view>
+
+  <view class="card mt12 rec {{recording ? 'on' : ''}}">
+    <view class="between">
+      <view>
+        <view class="h3">{{recording ? '正在录音' : '直接录音'}}</view>
+        <view class="tiny mt8">{{recording ? '说完点「停止并提取」，最长 10 分钟' : '会议、口述、语音备忘，录完直接出稿'}}</view>
+      </view>
+      <view class="timer {{recording ? 'live' : ''}}">{{timeText}}</view>
+    </view>
+    <button wx:if="{{!recording}}" class="btn primary mt12" bindtap="startRec">开始录音</button>
+    <button wx:else class="btn primary mt12" bindtap="stopRec">停止并提取</button>
+  </view>
+
+  <view class="card mt12" bindtap="pickVideo">
+    <view class="h3">相册视频</view>
+    <view class="tiny mt8">mp4 / mov，自动抽音轨</view>
+  </view>
+  <view class="card mt8" bindtap="pickFile">
+    <view class="h3">录音 / 聊天文件</view>
+    <view class="tiny mt8">m4a / mp3 / wav / aac / amr / silk / mp4</view>
+  </view>
+
+  <view wx:if="{{uploading}}" class="progress mt12">
+    <view class="bar" style="width:{{progress}}%"></view>
+  </view>
+  <view wx:if="{{uploading}}" class="tiny center mt8">已上传 {{progress}}%</view>
+
+  <view class="card flat mt12">
+    <view class="tiny">微信聊天里的语音不能直接导出，请在聊天里选「收藏 / 转存为文件」，或用手机录音机录完再上传。超过 10 分钟的录音建议用 APP 上传（支持分片与断点续传）。</view>
+  </view>
+</view>

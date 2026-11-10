@@ -1,0 +1,48 @@
+<view class="wrap">
+  <view class="between">
+    <view>
+      <text class="mono">SCRIPT STUDIO</text>
+      <view class="h1">文案工作台</view>
+      <view class="sub">11月4日 · 拆解爆款</view>
+    </view>
+    <view class="pill blue" bindtap="goKeys">体验 {{trial.left}}/{{trial.free}} ›</view>
+  </view>
+
+  <view class="card mt12">
+    <textarea class="paste" placeholder="粘贴抖音 / 小红书 / B站 / 公众号链接&#10;整段分享文案也可以，会自动识别" value="{{text}}" bindinput="onInput" maxlength="-1" />
+    <view class="platrow">
+      <text wx:for="{{platforms}}" wx:key="*this" class="plat">{{item}}</text>
+    </view>
+    <button class="btn primary mt12" bindtap="onParse" loading="{{loading}}">开始提取</button>
+    <view class="tiny center mt8">视频号请上传视频 · 其余平台直接粘链接</view>
+  </view>
+
+  <view class="card flat mt12" bindtap="goKeys">
+    <view class="between">
+      <view class="row" style="gap:14rpx;min-width:0">
+        <view class="dot"></view>
+        <view class="grow">
+          <view class="h3">用自己的 API Key</view>
+          <view class="tiny mt8">AI 成本你自付，平台只收解析与工作台费用</view>
+        </view>
+      </view>
+      <text class="tiny">去配置 ›</text>
+    </view>
+  </view>
+
+  <view class="between mt12">
+    <text class="h3">最近</text>
+    <text class="tiny" bindtap="goLibrary">全部 ›</text>
+  </view>
+  <view class="card mt8">
+    <view wx:if="{{tasks.length === 0}}" class="empty">还没有记录，先提取一条试试</view>
+    <view wx:for="{{tasks}}" wx:key="id" class="task" bindtap="openTask" data-id="{{item.id}}">
+      <view class="thumb">{{item.platform}}</view>
+      <view class="grow">
+        <view class="t1">{{item.title || '处理中…'}}</view>
+        <view class="tiny">{{item.progress}}% · {{item.status}}</view>
+      </view>
+      <text class="pill line sm">{{item.status === 'done' ? '完成' : item.progress + '%'}}</text>
+    </view>
+  </view>
+</view>

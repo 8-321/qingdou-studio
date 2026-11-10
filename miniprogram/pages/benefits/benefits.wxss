@@ -1,0 +1,8 @@
+.product{margin-top:16rpx}
+.product.on{border-color:#0A0A0B;box-shadow:0 0 0 2rpx #0A0A0B inset}
+.price{font-size:38rpx;font-weight:600;letter-spacing:-.5rpx;margin-left:16rpx}
+.inp{height:84rpx;border:1rpx solid #ECECEE;border-radius:16rpx;padding:0 20rpx;font-size:26rpx;background:#fff;margin-top:16rpx}
+
+.codebox{display:flex;align-items:center;justify-content:space-between;background:#F6F7F9;border-radius:20rpx;padding:20rpx 24rpx}
+.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:40rpx;font-weight:600;letter-spacing:4rpx;margin-top:6rpx}
+.invite-bind{border-top:1rpx solid #ECECEE;padding-top:12rpx}

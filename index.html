@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>轻抖复刻 · 文案提取工作台</title>
+<meta name="description" content="把别人的爆款变成你的脚本：视频/链接 → 逐句文案 → 时间轴 → 结构卡 → 提词器。PRD、UI、后端、小程序、合规、排期全链路。">
+<meta property="og:title" content="轻抖复刻 · 把别人的爆款变成你的脚本">
+<meta property="og:description" content="视频/链接 → 逐句文案 → 时间轴 → 结构卡 → 提词器。PRD、原型、FastAPI 后端、小程序、合规与排期。">
+<meta property="og:image" content="https://8-321.github.io/qingdou-studio/shots/home.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://8-321.github.io/qingdou-studio/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F7F6F2">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232563EB'/%3E%3Cpath d='M9 22V10h3.2l8 8.2V10H23v12h-3.2l-8-8.2V22z' fill='white'/%3E%3C/svg%3E">
+<style>
+:root{--ink:#0A0A0B;--sub:#5B616B;--line:#E6E4DE;--blue:#2563EB;--paper:#F7F6F2;--card:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;line-height:1.75}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 32px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line);font-size:13px}
+nav .brand{font-weight:800;letter-spacing:.06em}
+nav .links{display:flex;gap:22px;color:var(--sub)}
+nav .links a{text-decoration:none}
+nav .links a:hover{color:var(--ink)}
+header.hero{padding:96px 0 72px;border-bottom:1px solid var(--line)}
+.kicker{font-size:12px;letter-spacing:.22em;color:var(--blue);font-weight:700}
+h1{font-family:"Songti SC","Noto Serif SC",serif;font-size:clamp(38px,6vw,76px);line-height:1.12;letter-spacing:-.01em;margin:22px 0 24px;font-weight:700}
+h1 em{font-style:normal;color:var(--blue)}
+.lede{max-width:720px;color:var(--sub);font-size:17px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;text-decoration:none;font-size:14px;font-weight:700;border:1px solid var(--ink)}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.ghost{background:transparent;border-color:var(--line);font-weight:600;color:var(--sub)}
+.btn:hover{transform:translateY(-1px)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.stat{background:var(--paper);padding:28px 8px}
+.stat b{display:block;font-size:28px;letter-spacing:-.02em}
+.stat span{font-size:12px;color:var(--sub)}
+section{padding:72px 0;border-bottom:1px solid var(--line)}
+h2{font-family:"Songti SC","Noto Serif SC",serif;font-size:32px;margin-bottom:10px;letter-spacing:-.01em}
+.sub{color:var(--sub);font-size:14px;margin-bottom:32px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.fact{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px}
+.fact .no{font-family:ui-monospace,Consolas,monospace;font-size:11px;color:var(--blue);letter-spacing:.16em}
+.fact h3{font-size:17px;margin:12px 0 8px}
+.fact p{font-size:13.5px;color:var(--sub)}
+.shots{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.shots figure{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.shots img{width:100%;display:block}
+.shots figcaption{font-size:12px;color:var(--sub);padding:10px 12px}
+.docs{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.doc{background:var(--card);padding:20px 22px;text-decoration:none;display:block}
+.doc:hover{background:#FBFAF7}
+.doc b{display:block;font-size:14.5px}
+.doc span{font-size:12px;color:var(--sub)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px}
+.panel h3{font-size:18px;margin-bottom:10px}
+.panel p{font-size:13.5px;color:var(--sub);margin-bottom:12px}
+.panel code{background:#F1F0EB;padding:2px 6px;border-radius:4px;font-size:12px}
+footer{padding:44px 0 64px;color:var(--sub);font-size:12px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.facts{grid-template-columns:1fr}.shots{grid-template-columns:repeat(2,1fr)}.docs{grid-template-columns:1fr}.split{grid-template-columns:1fr}}
+@media(max-width:560px){.wrap{padding:0 20px}header.hero{padding:64px 0 48px}.shots{grid-template-columns:1fr 1fr}}
+nav.wrap{padding-top:22px;padding-bottom:22px}
+</style>
+</head>
+<body>
+<nav class="wrap">
+  <div class="brand">轻抖复刻 / CLIP SCRIPT</div>
+  <div class="links">
+    <a href="prototype/index.html">高保真原型</a>
+    <a href="docs/PRD.md">PRD</a>
+    <a href="https://github.com/8-321/qingdou-studio">GitHub</a>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="kicker">VIDEO → SCRIPT → STRUCTURE</div>
+  <h1>不是把视频变成文字，<br>是把别人的爆款<br><em>变成你的脚本。</em></h1>
+  <p class="lede">输入一条视频或链接，得到逐句文案、时间轴、爆款结构卡和可直接开拍的提词器。交付包含 PRD、12 屏原型、FastAPI 后端、微信小程序骨架、合规与 90 天排期。</p>
+  <div class="cta">
+    <a class="btn primary" href="prototype/index.html">打开 12 屏原型 →</a>
+    <a class="btn ghost" href="prototype/export-library.html">素材库 / 导出面板</a>
+    <a class="btn ghost" href="https://github.com/8-321/qingdou-studio">看源码</a>
+  </div>
+</header>
+
+<div class="stats wrap" style="max-width:1120px">
+  <div class="stat"><b>12</b><span>可点击屏幕</span></div>
+  <div class="stat"><b>7</b><span>小程序页面</span></div>
+  <div class="stat"><b>15</b><span>后端模块</span></div>
+  <div class="stat"><b>90</b><span>天可验收排期</span></div>
+</div>
+
+<section class="wrap">
+  <h2>先读这 3 条，能省两个月</h2>
+  <p class="sub">写进 PRD 之前先承认的现实，决定产品文案和商业模式。</p>
+  <div class="facts">
+    <div class="fact"><div class="no">FACT 01</div><h3>视频号没有可解析链接</h3><p>视频号不提供对外分享 URL，必须登录态 + 私有协议。产品文案改成「上传视频 / 录屏提取」，否则上线即差评。</p></div>
+    <div class="fact"><div class="no">FACT 02</div><h3>iOS 小程序不能卖虚拟会员</h3><p>微信规则限制。会员在 APP 内卖；小程序 iOS 端只做兑换码和引导下载，安卓走微信支付。</p></div>
+    <div class="fact"><div class="no">FACT 03</div><h3>链接解析是消耗品</h3><p>抖音、小红书平均 2–6 周改一次签名。必须预留「解析维护」的人或预算，否则三个月后全线失效。</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>界面</h2>
+  <p class="sub">极简黑白蓝，信息密度优先；原型可直接在手机尺寸下点。</p>
+  <div class="shots">
+    <figure><img src="shots/home.jpg" alt="首页"><figcaption>01 · 首页 / 粘贴链接</figcaption></figure>
+    <figure><img src="shots/keys.jpg" alt="密钥"><figcaption>02 · BYOK 密钥与额度</figcaption></figure>
+    <figure><img src="shots/vip.jpg" alt="会员"><figcaption>03 · 会员与兑换码</figcaption></figure>
+    <figure><img src="shots/library.jpg" alt="素材库"><figcaption>04 · 素材库 / 导出</figcaption></figure>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>文档</h2>
+  <p class="sub">从判断到上线，每一份都能单独读。</p>
+  <div class="docs">
+    <a class="doc" href="docs/PRD.md"><b>PRD · 产品需求</b><span>页面、状态、埋点、验收标准</span></a>
+    <a class="doc" href="docs/竞品与差异化.md"><b>竞品与差异化</b><span>12 款产品拆解 + 5 个差异化钉子</span></a>
+    <a class="doc" href="docs/商业模式-BYOK.md"><b>商业模式 · BYOK</b><span>自带密钥 / 平台托管 / 定价与毛利</span></a>
+    <a class="doc" href="docs/架构与技术选型.md"><b>架构与技术选型</b><span>解析层、ASR、成本与降级</span></a>
+    <a class="doc" href="docs/平台能力矩阵.md"><b>平台能力矩阵</b><span>各平台真实成功率与实现方式</span></a>
+    <a class="doc" href="docs/合规与风险.md"><b>合规与风险</b><span>提审话术、类目、版权、封号预案</span></a>
+    <a class="doc" href="docs/部署与成本.md"><b>部署与成本</b><span>服务器、域名、备案、OSS、ASR 报价</span></a>
+    <a class="doc" href="docs/90天排期.md"><b>90 天排期</b><span>按周的可验收里程碑</span></a>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>代码</h2>
+  <p class="sub">能跑的最小闭环，不是伪代码。</p>
+  <div class="split">
+    <div class="panel"><h3>server/ · FastAPI</h3><p>链接解析、上传、ASR、逐句时间轴、结构卡、改写、导出、额度与兑换码、管理后台。15 个模块，测试脚本齐全。</p><p><code>cd server &amp;&amp; pip install -r requirements.txt &amp;&amp; python start_dev.py</code></p></div>
+    <div class="panel"><h3>miniprogram/ · 微信原生</h3><p>7 个页面骨架，可直接导入微信开发者工具。API 基址和密钥在配置页填写，不写死在代码里。</p><p><code>微信开发者工具 → 导入 miniprogram/</code></p></div>
+  </div>
+</section>
+
+<footer class="wrap">轻抖复刻 · 产品与技术方案 · 仅用于学习与研究；请遵守各平台服务条款与著作权规定。</footer>
+</body>
+</html>

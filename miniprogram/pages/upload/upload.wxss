@@ -1,0 +1,6 @@
+
+.rec.on{border-color:#2563EB}
+.timer{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:40rpx;font-weight:600;color:#8A8F98}
+.timer.live{color:#2563EB}
+.progress{height:12rpx;background:#ECECEE;border-radius:6rpx;overflow:hidden}
+.progress .bar{height:12rpx;background:#2563EB;transition:width .2s}
